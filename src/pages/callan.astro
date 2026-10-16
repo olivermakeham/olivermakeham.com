@@ -1,0 +1,77 @@
+---
+import ImageGallery from '../components/ImageGallery.astro';
+
+const blocks = [
+    {
+        type: 'text',
+        text: "This Callan Park graphic wayfinding concept reimagines navigation as an experience that guides people through the park while encouraging personal reflection, using the site's mental health history, questioning prompts, and unconventional signage to subtly lead visitors through the landscape and engage them with both the place and their own thoughts.",
+    },
+    {
+        type: 'text',
+        text: "An abstract ribbon with running text of someone's inner monologue acts as an entrance point that captures the attention of passer-bys.",
+    },
+    {
+        type: 'gallery',
+        label: 'Callan Park wayfinding ribbon',
+        images: [
+            { src: 'a1.jpg', alt: 'Callan Park graphic wayfinding study A, first view' },
+            { src: 'a2.jpg', alt: 'Callan Park graphic wayfinding study A, alternate view' },
+        ],
+    },
+    {
+        type: 'text',
+        text: 'An example of a fragmented sign that encourages people to approach it, as it must be viewed from a certain angle to connect.',
+    },
+    {
+        type: 'gallery',
+        label: 'Callan Park fragmented signage',
+        images: [
+            { src: 'b1.jpg', alt: 'Callan Park graphic wayfinding study B, first view' },
+            { src: 'b2.png', alt: 'Callan Park graphic wayfinding study B, alternate view' },
+        ],
+    },
+    {
+        type: 'text',
+        text: 'Text would be scattered across the park, persuading people to explore and respond to the prompts.',
+    },
+    {
+        type: 'gallery',
+        label: 'Callan Park wayfinding prompts',
+        images: [
+            { src: 'c1.jpg', alt: 'Callan Park graphic wayfinding study C, first view' },
+            { src: 'c2.jpg', alt: 'Callan Park graphic wayfinding study C, alternate view' },
+            { src: 'd1.png', alt: 'Callan Park graphic wayfinding study D, first view' },
+            { src: 'd2.png', alt: 'Callan Park graphic wayfinding study D, alternate view' },
+        ],
+    },
+    {
+        type: 'text',
+        text: 'A concept for an interactive exhibit, where people can use chalk to answer the question anywhere they like.',
+    },
+    {
+        type: 'gallery',
+        label: 'Callan Park interactive exhibit',
+        images: [
+            { src: 'e1.png', alt: 'Callan Park graphic wayfinding study E, first view' },
+            { src: 'e2.jpg', alt: 'Callan Park graphic wayfinding study E, second view' },
+            { src: 'e3.jpg', alt: 'Callan Park graphic wayfinding study E, third view' },
+        ],
+    },
+    {
+        type: 'text',
+        text: 'More questions and prompts are cut out of rusted steel to blend with the environment.',
+    },
+    {
+        type: 'gallery',
+        label: 'Callan Park rusted steel prompts',
+        images: [
+            { src: 'f1.jpg', alt: 'Callan Park study F, first view' },
+            { src: 'f2.jpg', alt: 'Callan Park study F, second view' },
+            { src: 'f3.jpg', alt: 'Callan Park study F, third view' },
+            { src: 'f4.jpg', alt: 'Callan Park study F, fourth view' },
+        ],
+    },
+];
+---
+
+<ImageGallery title="Graphic Wayfinding Concept" folder="callan" blocks={blocks} />

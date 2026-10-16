@@ -1,0 +1,20 @@
+---
+import ImageGallery from '../components/ImageGallery.astro';
+
+const blocks = [
+    {
+        type: 'text',
+        text: 'I created this animation in Maya that follows a frog attempting to open a hatch through a series of escalating actions. It focuses on clear visual storytelling and physical comedy, with simple staging and exaggerated motion to keep the idea readable without the need of any dialogue.',
+    },
+    {
+        type: 'gallery',
+        label: 'Animation artwork and colour study',
+        images: [
+            { src: 'untitled.jpg', alt: 'Animation artwork' },
+            { src: 'untitledBright.jpg', alt: 'Animation artwork, bright colour study' },
+        ],
+    },
+];
+---
+
+<ImageGallery title="Short Animation" folder="animation" blocks={blocks} />

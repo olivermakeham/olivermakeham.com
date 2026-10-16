@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+    <main class="about-page">
+        <figure class="about-image-frame">
+            <img src="/jpg_about/aboutBack.png" alt="Figures in a studio scene" />
+        </figure>
+    </main>
+</Layout>
+
+<style>
+    :global(body) {
+        background: #fff;
+        color: #121411;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .about-page {
+        box-sizing: border-box;
+        display: grid;
+        align-items: center;
+        min-height: 100svh;
+        max-width: 1360px;
+        margin: 0 auto;
+        padding: clamp(4.5rem, 8vw, 7rem) clamp(1rem, 4vw, 3.5rem) clamp(2.5rem, 5vw, 5rem);
+    }
+
+    .about-image-frame {
+        width: 100%;
+        max-width: 1120px;
+        max-height: min(80svh, 58rem);
+        margin: 0 auto;
+        overflow: hidden;
+        background: #f4f1ea;
+    }
+
+    .about-image-frame img {
+        display: block;
+        width: 100%;
+        max-height: min(80svh, 58rem);
+        object-fit: contain;
+    }
+
+    @media (max-width: 760px) {
+        .about-page {
+            min-height: 100svh;
+            padding: 4rem 1rem 2rem;
+        }
+    }
+</style>

@@ -1,0 +1,47 @@
+---
+import ImageGallery from '../components/ImageGallery.astro';
+
+const blocks = [
+    {
+        type: 'text',
+        text: 'Modelled and rendered in Maya, this brutalist, industrial bar sits atop a modern skyscraper. It caters to wealthy customers who use the space to let loose, and the aftermath of an intense night of drinking and fighting is captured in the morning light streaming through the windows.',
+    },
+    {
+        type: 'image',
+        image: { src: 's.jpg', alt: 'Bar Scene concept render' },
+    },
+    {
+        type: 'gallery',
+        label: 'Bar Scene interior studies',
+        images: [
+            { src: 's1.jpg', alt: 'Bar Scene interior study one' },
+            { src: 's2.jpg', alt: 'Bar Scene interior study two' },
+            { src: 's3.jpg', alt: 'Bar Scene interior study three' },
+        ],
+    },
+    {
+        type: 'gallery',
+        label: 'Bar Scene detail studies',
+        images: [
+            { src: 's4.jpg', alt: 'Bar Scene detail study four' },
+            { src: 's5.jpg', alt: 'Bar Scene detail study five' },
+            { src: 's6.jpg', alt: 'Bar Scene detail study six' },
+            { src: 's7.jpg', alt: 'Bar Scene detail study seven' },
+        ],
+    },
+    {
+        type: 'text',
+        text: 'This scene, modelled and rendered in Maya, is a brutalist and industrial bar situated atop a modern skyscraper, catering to wealthy customers who have used the space to let loose and engage in rowdy behaviour, and this is captured in the aftermath of an intense night of drinking and fighting, illuminated by the morning light through the windows.',
+    },
+    {
+        type: 'gallery',
+        label: 'Bar Scene alternate studies',
+        images: [
+            { src: 'w.jpg', alt: 'Bar Scene alternate interior study one' },
+            { src: 'w2.jpg', alt: 'Bar Scene alternate interior study two' },
+        ],
+    },
+];
+---
+
+<ImageGallery title="Bar Scene" folder="bar" blocks={blocks} />

@@ -1,0 +1,39 @@
+---
+import ImageGallery from '../components/ImageGallery.astro';
+
+const blocks = [
+    {
+        type: 'text',
+        text: 'This is a concept exhibition design language that explores geometric form and colour. The project uses shapes derived from a logo, with overlap and variation to create an expressive visual system. It also reflects the design values of the Australian Graphic Design Association, which was referenced in example text.',
+    },
+    {
+        type: 'text',
+        text: "The colourful letters of the logo symbolically overlap one another, and provide the basis of the exhibition's graphic language.",
+    },
+    {
+        type: 'text',
+        text: 'An entry wall that uses transparent acrylic to simulate blending effects in real life.',
+    },
+    {
+        type: 'text',
+        text: 'Concept pages for an exhibition booklet.',
+    },
+    {
+        type: 'text',
+        text: 'An example of an Instagram promotional tile of the exhibition.',
+    },
+    {
+        type: 'gallery',
+        label: 'Graphic exhibition concept',
+        images: [
+            { src: 'logo.jpg', alt: 'Graphic exhibition concept logo' },
+            { src: 'page1.jpg', alt: 'Graphic exhibition concept, printed page one' },
+            { src: 'page2.jpg', alt: 'Graphic exhibition concept, printed page two' },
+            { src: 'page3.jpg', alt: 'Graphic exhibition concept, printed page three' },
+            { src: 'insta.jpg', alt: 'Graphic exhibition concept social media artwork' },
+        ],
+    },
+];
+---
+
+<ImageGallery title="Graphic Exhibition Concept" folder="graphics" blocks={blocks} />

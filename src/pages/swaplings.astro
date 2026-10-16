@@ -1,0 +1,49 @@
+---
+import ImageGallery from '../components/ImageGallery.astro';
+
+const blocks = [
+    {
+        type: 'text',
+        text: 'The portrayal of disabilities and diverse bodies in the toy and collectible market remains incredibly under represented. This project, Swaplings, is a series of stylised, 3D-printed action figures that explore inclusion and diversity through modular design and the representation of disabilities. Detachable limbs of varying shapes, sizes, and colours can be mixed and matched to encourage playful interaction beyond conventional toy norms - modularity lets people experiment and be creative, allowing them to make their own versions of toys they own. Disabilities are part of the characters, but they are no more important than their shapes and personality, to ensure that representation is natural as opposed to tokenistic. Tangible agency is offered through this modularity, and the combination with bold design aims to make a product line that is both socially conscious and creatively engaging.',
+    },
+    {
+        type: 'image',
+        image: { src: 'swaplingsLogo.jpg', alt: 'Swaplings character collection and logo' },
+    },
+    {
+        type: 'text',
+        text: 'Unique 3D models were textured and rendered in Blender to provide supporting graphic imagery.',
+    },
+    {
+        type: 'image',
+        image: { src: 'renders1.jpg', alt: 'Rendered Swaplings character collection' },
+    },
+    {
+        type: 'text',
+        text: 'The 3D printed models were interactive prototypes that explored the modularity of the system.',
+    },
+    {
+        type: 'gallery',
+        label: 'Swaplings character examples',
+        images: [
+            { src: 'eg1.jpg', alt: 'Swaplings character study, example one' },
+            { src: 'eg2.jpg', alt: 'Swaplings character study, example two' },
+        ],
+    },
+    {
+        type: 'text',
+        text: 'Additional accessories allow for absurd and creative play.',
+    },
+    {
+        type: 'gallery',
+        label: 'Swaplings packaging and presentation',
+        images: [
+            { src: 'box.jpg', alt: 'Swaplings packaging box' },
+            { src: 'panel.jpg', alt: 'Swaplings character information panel' },
+            { src: 'logo.jpg', alt: 'Swaplings identity and logo artwork' },
+        ],
+    },
+];
+---
+
+<ImageGallery title="Swaplings" folder="swaplings" blocks={blocks} />

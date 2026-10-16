@@ -1,0 +1,61 @@
+---
+import ImageGallery from '../components/ImageGallery.astro';
+
+const makeGallery = (label: string, images: string[]) => ({
+    type: 'gallery',
+    label: `${label} design studies`,
+    images: images.map((src, index) => ({
+        src,
+        alt: `${label} design study ${index + 1}`,
+    })),
+});
+
+const blocks = [
+    {
+        type: 'text',
+        text: 'Gummy Band is a concept for a gum collection point that can be placed anywhere in a public setting in order to minimise littering and support gum recycling.',
+    },
+    makeGallery('Collection render one', [
+        'collectionrender.jpg',
+        'collectionrender1.jpg',
+        'collectionrender2.jpg',
+    ]),
+    {
+        type: 'text',
+        text: 'The frog and the robot were characters made for my first animation.',
+    },
+    makeGallery('Frog', ['froghandles.jpg', 'frogspose.jpg']),
+    makeGallery('Robot', [
+        'robotCorridor.jpg',
+        'robotandTurtle.jpg',
+        'robotbutterflies.jpg',
+        'robotredroom.jpg',
+        'robotstudio.jpg',
+    ]),
+    {
+        type: 'text',
+        text: 'This is a lightweight wireframe shell for the endangered Western Swamp Tortoise, which would protect it from predators while doubling as a souvenir after use.',
+    },
+    makeGallery('Collection render two', [
+        'collectionrender3.jpg',
+        'collectionrender4.jpg',
+        'collectionrender5.jpg',
+        'collectionrender6.jpg',
+    ]),
+    makeGallery('Frame variants', ['framevariants.jpg']),
+    makeGallery('Turtle', ['turtle1.jpg', 'turtle2.jpg', 'turtle3.jpg', 'turtle4.jpg']),
+    {
+        type: 'text',
+        text: 'These colourful buttons are macro keypads that can be assigned to any keyboard function and feature different connection points for a customisable user experience.',
+    },
+    makeGallery('Keyboard', ['keyboard1.jpg', 'keyboard2.jpg', 'keyboard3.jpg']),
+    makeGallery('Painting', ['lewispaint.jpg']),
+    {
+        type: 'text',
+        text: 'This teapot is inspired by the colourful and eclectic shapes of Memphis design and has a coil that keeps all the pieces together.',
+    },
+    makeGallery('Studies', ['1.jpg', '2.jpg', '3.jpg', '4.jpg']),
+];
+---
+
+<ImageGallery title="Assortments" folder="assortments" blocks={blocks} />

@@ -1,0 +1,58 @@
+---
+import ImageGallery from '../components/ImageGallery.astro';
+
+const blocks = [
+    {
+        type: 'text',
+        text: 'For people with vision impairments, it can be difficult to use conventional maps to understand the layout of a site, especially when the majority of information is communicated through visual graphic design. To help understand the layout of these sites, I developed maps for existing and developing sites using shapes and symbols that are greatly distinct from one another when felt, and utilise dramatic black and white contrast to stand out to those with limited vision. This simplified design language removes any unnecessary features that would be distracting when engaging with touch, and exaggerates scale and proportion to clearly define structure while retaining the layout of the site.',
+    },
+    {
+        type: 'image',
+        image: { src: 'title.jpg', alt: 'Tactile Maps project title artwork' },
+    },
+    {
+        type: 'gallery',
+        label: 'Tactile map examples',
+        images: [
+            { src: 'eg1.png', alt: 'Tactile map example one' },
+            { src: 'eg2.png', alt: 'Tactile map example two' },
+        ],
+    },
+    {
+        type: 'text',
+        text: 'Graphic elements in black are raised to allow for tactile tracing.',
+    },
+    {
+        type: 'text',
+        text: 'The elements are simple but are easily distinguished from one another when felt.',
+    },
+    {
+        type: 'image',
+        image: { src: 'legend.jpg', alt: 'Tactile Maps symbol legend' },
+    },
+    {
+        type: 'text',
+        text: 'A few examples of the maps.',
+    },
+    {
+        type: 'gallery',
+        label: 'Tactile Maps map series, first half',
+        images: [
+            { src: 'm1.jpg', alt: 'Tactile map, first design' },
+            { src: 'm2.jpg', alt: 'Tactile map, second design' },
+            { src: 'm3.jpg', alt: 'Tactile map, third design' },
+        ],
+    },
+    {
+        type: 'gallery',
+        label: 'Tactile Maps map series, second half',
+        images: [
+            { src: 'm4.jpg', alt: 'Tactile map, fourth design' },
+            { src: 'm5.jpg', alt: 'Tactile map, fifth design' },
+            { src: 'm6.jpg', alt: 'Tactile map, sixth design' },
+        ],
+    },
+];
+---
+
+<ImageGallery title="Tactile Maps" folder="maps" blocks={blocks} />

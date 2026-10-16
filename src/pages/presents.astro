@@ -1,0 +1,31 @@
+---
+import ImageGallery from '../components/ImageGallery.astro';
+
+const makeGallery = (name: string, images: string[]) => ({
+    type: 'gallery',
+    label: `${name} present design`,
+    images: images.map((src, index) => ({
+        src,
+        alt: `${name} present, design view ${index + 1}`,
+    })),
+});
+
+const blocks = [
+    {
+        type: 'text',
+        text: 'To celebrate the 21st birthdays of my friends, I made unique 3D models of them in Blender featuring exaggerated and absurd aspects of their characters and interests, which were then 3D printed and hand painted.',
+    },
+    makeGallery('Alec', ['alec1.jpg', 'alec2.jpg', 'alec3.jpg']),
+    makeGallery('Daire', ['daire1.jpg', 'daire2.jpg', 'daire3.jpg']),
+    makeGallery('Grace', ['grace1.jpg', 'grace2.jpg', 'grace3.jpg']),
+    makeGallery('Harlem', ['harlem1.jpg', 'harlem2.jpg', 'harlem3.jpg']),
+    makeGallery('Julian', ['julian1.jpg', 'julian2.jpg', 'julian3.jpg']),
+    makeGallery('Lewis', ['lewis1.jpg', 'lewis2.jpg']),
+    makeGallery('Luka', ['luka1.jpg', 'luka2.jpg', 'luka3.jpg']),
+    makeGallery('Marcus', ['marcus1.jpg', 'marcus2.jpg', 'marcus3.jpg']),
+    makeGallery('Oscar', ['oscar1.jpg', 'oscar2.jpg']),
+    makeGallery('Somer', ['somer1.jpg', 'somer2.jpg', 'somer3.jpg']),
+];
+---
+
+<ImageGallery title="Presents for Friends" folder="presents" blocks={blocks} />

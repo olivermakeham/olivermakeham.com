@@ -1,0 +1,105 @@
+---
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isHomePage = currentPath === '/';
+const isAboutPage = currentPath === '/about';
+const { title = 'Oliver Makeham' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/Untitled2.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<nav class="site-navigation" aria-label="Main navigation">
+			<button class="back-button" type="button" aria-label="Go back">
+				<img src="/navigation_icons/backFull.png" alt="" />
+			</button>
+			<a href="/" aria-label="Home" aria-current={isHomePage ? 'page' : undefined}>
+				<img
+					src={isHomePage ? '/navigation_icons/homePress.png' : '/navigation_icons/homeFull.png'}
+					alt=""
+				/>
+			</a>
+			<a href="/about" aria-label="Info" aria-current={isAboutPage ? 'page' : undefined}>
+				<img
+					src={isAboutPage ? '/navigation_icons/infoPress.png' : '/navigation_icons/infoFull.png'}
+					alt=""
+				/>
+			</a>
+		</nav>
+		<slot />
+	</body>
+</html>
+
+<script>
+	const backButton = document.querySelector<HTMLButtonElement>('.back-button');
+	backButton?.addEventListener('click', () => {
+		if (window.history.length > 1) {
+			window.history.back();
+		} else {
+			window.location.assign('/');
+		}
+	});
+</script>
+
+<style>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.site-navigation {
+		position: fixed;
+		top: clamp(0.5rem, 1.5vw, 1rem);
+		left: clamp(1rem, 3vw, 3rem);
+		z-index: 1000;
+		display: flex;
+		align-items: center;
+		gap: clamp(0.4rem, 1vw, 0.75rem);
+	}
+
+	.site-navigation a,
+	.back-button {
+		display: block;
+		width: clamp(1.75rem, 2.75vw, 2.25rem);
+		height: clamp(1.75rem, 2.75vw, 2.25rem);
+		padding: 0;
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.site-navigation img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+	.site-navigation a:focus-visible,
+	.back-button:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 3px;
+		border-radius: 50%;
+	}
+
+	@media (max-width: 560px) {
+		.site-navigation {
+			left: 0.75rem;
+			gap: 0.25rem;
+		}
+
+		.site-navigation a,
+		.back-button {
+			width: 1.625rem;
+			height: 1.625rem;
+		}
+	}
+</style>
