@@ -1,61 +1,112 @@
 ---
-import ImageGallery from '../components/ImageGallery.astro';
+import ProjectShell from '../components/ProjectShell.astro';
+import Fig from '../components/Fig.astro';
 
-const makeGallery = (label: string, images: string[]) => ({
-    type: 'gallery',
-    label: `${label} design studies`,
-    images: images.map((src, index) => ({
-        src,
-        alt: `${label} design study ${index + 1}`,
-    })),
-});
+type Block = { kind: 'row' | 'feature'; ratio: string; imgs: [string, string][] };
+type Section = { n: string; title: string; text: string; tint: string; blocks: Block[] };
 
-const blocks = [
+const sections: Section[] = [
     {
-        type: 'text',
+        n: '01', title: 'Gummy Band', tint: '#ff6fa8',
         text: 'Gummy Band is a concept for a gum collection point that can be placed anywhere in a public setting in order to minimise littering and support gum recycling.',
+        blocks: [
+            { kind: 'feature', ratio: '1/1', imgs: [['collectionrender.jpg', 'Gummy Band gum collection point render'], ['collectionrender1.jpg', 'Gummy Band render, second view'], ['collectionrender2.jpg', 'Gummy Band render, third view']] },
+            { kind: 'row', ratio: '1/1', imgs: [['collectionrender3.jpg', 'Gummy Band render, fourth view'], ['collectionrender4.jpg', 'Gummy Band render, fifth view'], ['collectionrender5.jpg', 'Gummy Band render, sixth view'], ['collectionrender6.jpg', 'Gummy Band render, seventh view']] },
+        ],
     },
-    makeGallery('Collection render one', [
-        'collectionrender.jpg',
-        'collectionrender1.jpg',
-        'collectionrender2.jpg',
-    ]),
     {
-        type: 'text',
+        n: '02', title: 'Frog & Robot', tint: '#1fb89a',
         text: 'The frog and the robot were characters made for my first animation.',
+        blocks: [
+            { kind: 'row', ratio: '2048/1538', imgs: [['froghandles.jpg', 'Frog character with handles'], ['frogspose.jpg', 'Frog character poses']] },
+            { kind: 'row', ratio: '3/2', imgs: [['robotCorridor.jpg', 'Robot in a corridor'], ['robotandTurtle.jpg', 'Robot with a turtle']] },
+            { kind: 'row', ratio: '3/2', imgs: [['robotbutterflies.jpg', 'Robot with butterflies'], ['robotredroom.jpg', 'Robot in a red room'], ['robotstudio.jpg', 'Robot in the studio']] },
+        ],
     },
-    makeGallery('Frog', ['froghandles.jpg', 'frogspose.jpg']),
-    makeGallery('Robot', [
-        'robotCorridor.jpg',
-        'robotandTurtle.jpg',
-        'robotbutterflies.jpg',
-        'robotredroom.jpg',
-        'robotstudio.jpg',
-    ]),
     {
-        type: 'text',
+        n: '03', title: 'Western Swamp Tortoise', tint: '#ff9f43',
         text: 'This is a lightweight wireframe shell for the endangered Western Swamp Tortoise, which would protect it from predators while doubling as a souvenir after use.',
+        blocks: [
+            { kind: 'row', ratio: '4/3', imgs: [['turtle1.jpg', 'Tortoise shell prototype, one'], ['turtle2.jpg', 'Tortoise shell prototype, two'], ['turtle3.jpg', 'Tortoise shell prototype, three'], ['turtle4.jpg', 'Tortoise shell prototype, four']] },
+        ],
     },
-    makeGallery('Collection render two', [
-        'collectionrender3.jpg',
-        'collectionrender4.jpg',
-        'collectionrender5.jpg',
-        'collectionrender6.jpg',
-    ]),
-    makeGallery('Frame variants', ['framevariants.jpg']),
-    makeGallery('Turtle', ['turtle1.jpg', 'turtle2.jpg', 'turtle3.jpg', 'turtle4.jpg']),
     {
-        type: 'text',
+        n: '04', title: 'Macro Keypads', tint: '#7c4dff',
         text: 'These colourful buttons are macro keypads that can be assigned to any keyboard function and feature different connection points for a customisable user experience.',
+        blocks: [
+            { kind: 'row', ratio: '16/9', imgs: [['framevariants.jpg', 'Macro keypad colour variants']] },
+            { kind: 'feature', ratio: '16/9', imgs: [['keyboard1.jpg', 'Colourful macro keypad'], ['keyboard2.jpg', 'Macro keypad connection points'], ['keyboard3.jpg', 'Macro keypad layout']] },
+        ],
     },
-    makeGallery('Keyboard', ['keyboard1.jpg', 'keyboard2.jpg', 'keyboard3.jpg']),
-    makeGallery('Painting', ['lewispaint.jpg']),
     {
-        type: 'text',
+        n: '05', title: 'Memphis Teapot', tint: '#ff5d5d',
         text: 'This teapot is inspired by the colourful and eclectic shapes of Memphis design and has a coil that keeps all the pieces together.',
+        blocks: [
+            { kind: 'row', ratio: '16/9', imgs: [['1.jpg', 'Memphis teapot, view one'], ['2.jpg', 'Memphis teapot, view two']] },
+            { kind: 'row', ratio: '16/9', imgs: [['3.jpg', 'Memphis teapot, view three'], ['4.jpg', 'Memphis teapot, view four']] },
+        ],
     },
-    makeGallery('Studies', ['1.jpg', '2.jpg', '3.jpg', '4.jpg']),
 ];
 ---
 
-<ImageGallery title="Assortments" folder="assortments" blocks={blocks} />
+<ProjectShell
+    title="Assortments"
+    bg="#efe9ff"
+    ink="#1d1533"
+    accent="#7c4dff"
+    class="assortments"
+>
+    <h1 class="p-title"><span class="sans">Assortments</span><span class="p-date">2023 – present</span></h1>
+
+    {sections.map((s) => (
+        <section class="p-wrap sec" style={`--t:${s.tint}`}>
+            <div class="blocks">
+                {s.blocks.map((b) =>
+                    b.kind === 'feature' ? (
+                        <div class="feature">
+                            {b.imgs.map(([src, alt], i) => (
+                                <div class={`p-cell f${i} ${i === 0 ? 'p-cell--stretch' : ''}`} style={`--cell:${b.ratio}`}>
+                                    <Fig folder="assortments" src={src} alt={alt} fill eager={s.n === '01' && i < 2} radius="18px" sizes={i === 0 ? '(min-width: 1200px) 880px, 94vw' : '(min-width: 1200px) 430px, 94vw'} />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div class={`row row--${b.imgs.length}`}>
+                            {b.imgs.map(([src, alt], i) => (
+                                <div class="p-cell" style={`--cell:${b.ratio}`}>
+                                    <Fig folder="assortments" src={src} alt={alt} fill radius="18px" sizes={b.imgs.length === 1 ? '(min-width: 1440px) 1330px, 94vw' : b.imgs.length === 2 ? '(min-width: 1200px) 660px, 94vw' : '(min-width: 1200px) 330px, 50vw'} />
+                                </div>
+                            ))}
+                        </div>
+                    ),
+                )}
+            </div>
+            <p class="p-caption">{s.text}</p>
+        </section>
+    ))}
+</ProjectShell>
+
+<style>
+    .p-title { padding-bottom: clamp(3rem, 8vw, 6rem); }
+        .sec { display: grid; gap: clamp(.8rem, 2vw, 1.4rem); padding-block: clamp(2rem, 5vw, 4rem); }
+
+    .blocks { display: grid; gap: var(--gap, 1rem); }
+    .row { display: grid; gap: var(--gap, 1rem); }
+    .row--2 { grid-template-columns: 1fr 1fr; }
+    .row--3 { grid-template-columns: repeat(3, 1fr); }
+    .row--4 { grid-template-columns: repeat(4, 1fr); }
+
+    .feature { display: grid; grid-template-columns: 2fr 1fr; gap: var(--gap, 1rem); }
+    .feature .f0 { grid-row: span 2; }
+
+    @media (max-width: 899px) {
+        .row--4 { grid-template-columns: 1fr 1fr; }
+        .row--3 { grid-template-columns: 1fr 1fr; }
+        .row--3 .p-cell:first-child { grid-column: 1 / -1; }
+        .feature { grid-template-columns: 1fr 1fr; }
+        .feature .f0 { grid-column: 1 / -1; grid-row: auto; }
+    }
+    @media (max-width: 560px) {
+        .row--2 { grid-template-columns: 1fr; }
+    }
+</style>

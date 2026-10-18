@@ -1,52 +1,127 @@
 ---
+import { Picture } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
+import '../styles/project.css';
+import { asset } from '../lib/images';
 ---
 
-<Layout>
-    <main class="about-page">
-        <figure class="about-image-frame">
-            <img src="/jpg_about/aboutBack.png" alt="Figures in a studio scene" />
-        </figure>
+<Layout title="About — Oliver Makeham" bg="#ffffff" ink="#16161a" lightbox>
+    <main class="about" style="--accent:#2f6bff">
+        <Picture
+            class="about-bg"
+            src={asset('jpg_about', 'aboutBack.png')}
+            alt="Figures in a studio scene"
+            formats={['avif']}
+            fallbackFormat="webp"
+            widths={[1280, 1920, 2560]}
+            sizes="100vw"
+            quality={75}
+            loading="eager"
+            fetchpriority="high"
+        />
+        <section class="about-text">
+            <h1 class="p-display">Oliver Makeham</h1>
+            <p>
+                I'm a designer in Sydney. I work primarily in 3D across objects, environments, animation, and
+                systems, and I’m drawn to playful exaggeration and character-driven forms to make ideas more
+                accessible and understandable.
+            </p>
+            <p>
+                I’m also interested in user-centred and inclusive design, particularly accessibility, wayfinding,
+                and simplifying complicated systems into clear outcomes.
+            </p>
+            <p class="contact">
+                <a href="mailto:olivermakeham@gmail.com">olivermakeham@gmail.com</a><br />
+                <a href="tel:+61422818528">0422 818 528</a>
+            </p>
+        </section>
     </main>
 </Layout>
 
 <style>
-    :global(body) {
-        background: #fff;
-        color: #121411;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .about-page {
+    .about {
+        position: relative;
         box-sizing: border-box;
-        display: grid;
-        align-items: center;
-        min-height: 100svh;
-        max-width: 1360px;
-        margin: 0 auto;
-        padding: clamp(4.5rem, 8vw, 7rem) clamp(1rem, 4vw, 3.5rem) clamp(2.5rem, 5vw, 5rem);
-    }
-
-    .about-image-frame {
-        width: 100%;
-        max-width: 1120px;
-        max-height: min(80svh, 58rem);
-        margin: 0 auto;
+        height: calc(100svh - var(--hand-h, 0px));
         overflow: hidden;
-        background: #f4f1ea;
+        color: #16161a;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
-    .about-image-frame img {
-        display: block;
-        width: 100%;
-        max-height: min(80svh, 58rem);
-        object-fit: contain;
+    .about :global(.about-bg) {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 68%;
+        /* 38.25vw keeps the full 16:9 image; as the window gets taller/narrower it stops shrinking at 62% and crops instead */
+        height: clamp(62%, 38.25vw, 100%);
+        object-fit: cover;
+        object-position: 70% bottom;
     }
 
-    @media (max-width: 760px) {
-        .about-page {
-            min-height: 100svh;
-            padding: 4rem 1rem 2rem;
+    .about-text {
+        position: absolute;
+        top: 50%;
+        left: clamp(var(--pad), 12vw, 12rem);
+        z-index: 1;
+        width: 22rem;
+        max-width: calc(100% - 2 * var(--pad));
+        transform: translateY(-50%);
+        font-size: 1rem;
+        line-height: 1.55;
+    }
+
+    /* Soft white halo so text stays legible when the image slides behind it */
+    .about-text::before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        inset: -4rem -5rem -4rem -12rem;
+        background: radial-gradient(ellipse at 40% 50%, #fff 45%, rgba(255, 255, 255, 0) 75%);
+        pointer-events: none;
+    }
+
+    .about-text h1 {
+        margin: 0 0 0.6em;
+        font-size: 2.6rem;
+    }
+
+    .about-text p {
+        margin: 0 0 1em;
+    }
+
+    .about-text a {
+        color: inherit;
+        font-weight: 700;
+        text-underline-offset: 0.25em;
+        text-decoration-color: var(--accent);
+    }
+
+    /* Narrow screens: text sits over a white fade at the top of the image */
+    @media (max-width: 900px) {
+        .about-text {
+            top: 0;
+            right: auto;
+            left: 0;
+            width: 100%;
+            max-width: none;
+            box-sizing: border-box;
+            transform: none;
+            padding: 1.25rem max(var(--pad), calc((100% - 22rem) / 2)) 2.5rem;
+            background: linear-gradient(180deg, #fff 70%, rgba(255, 255, 255, 0));
+        }
+
+        .about-text::before {
+            display: none;
+        }
+
+        .about :global(.about-bg) {
+            top: auto;
+            bottom: 0;
+            width: 100%;
+            height: 62%;
+            object-fit: cover;
+            object-position: 70% bottom;
         }
     }
 </style>

@@ -1,49 +1,111 @@
 ---
-import ImageGallery from '../components/ImageGallery.astro';
-
-const blocks = [
-    {
-        type: 'text',
-        text: 'The portrayal of disabilities and diverse bodies in the toy and collectible market remains incredibly under represented. This project, Swaplings, is a series of stylised, 3D-printed action figures that explore inclusion and diversity through modular design and the representation of disabilities. Detachable limbs of varying shapes, sizes, and colours can be mixed and matched to encourage playful interaction beyond conventional toy norms - modularity lets people experiment and be creative, allowing them to make their own versions of toys they own. Disabilities are part of the characters, but they are no more important than their shapes and personality, to ensure that representation is natural as opposed to tokenistic. Tangible agency is offered through this modularity, and the combination with bold design aims to make a product line that is both socially conscious and creatively engaging.',
-    },
-    {
-        type: 'image',
-        image: { src: 'swaplingsLogo.jpg', alt: 'Swaplings character collection and logo' },
-    },
-    {
-        type: 'text',
-        text: 'Unique 3D models were textured and rendered in Blender to provide supporting graphic imagery.',
-    },
-    {
-        type: 'image',
-        image: { src: 'renders1.jpg', alt: 'Rendered Swaplings character collection' },
-    },
-    {
-        type: 'text',
-        text: 'The 3D printed models were interactive prototypes that explored the modularity of the system.',
-    },
-    {
-        type: 'gallery',
-        label: 'Swaplings character examples',
-        images: [
-            { src: 'eg1.jpg', alt: 'Swaplings character study, example one' },
-            { src: 'eg2.jpg', alt: 'Swaplings character study, example two' },
-        ],
-    },
-    {
-        type: 'text',
-        text: 'Additional accessories allow for absurd and creative play.',
-    },
-    {
-        type: 'gallery',
-        label: 'Swaplings packaging and presentation',
-        images: [
-            { src: 'box.jpg', alt: 'Swaplings packaging box' },
-            { src: 'panel.jpg', alt: 'Swaplings character information panel' },
-            { src: 'logo.jpg', alt: 'Swaplings identity and logo artwork' },
-        ],
-    },
-];
+import ProjectShell from '../components/ProjectShell.astro';
+import Fig from '../components/Fig.astro';
+import Note from '../components/Note.astro';
 ---
 
-<ImageGallery title="Swaplings" folder="swaplings" blocks={blocks} />
+<ProjectShell
+    title="Swaplings"
+    bg="#fff1df"
+    ink="#2a1830"
+    accent="#ff4f8b"
+    class="swaplings"
+>
+    <section class="hero">
+        <Fig folder="swaplings" src="swaplingsLogo.jpg" alt="Swaplings character collection and logo" ratio="4/3" eager sizes="(min-width: 1100px) 900px, 94vw" widths={[960, 1440, 1920]} radius="0" class="hero-logo" />
+    </section>
+    <p class="p-date p-date--solo">2025</p>
+
+    <section class="p-wrap">
+        <div class="p-intro">
+            <p class="p-intro-lead">The portrayal of disabilities and diverse bodies in the toy and collectible market remains incredibly under represented. This project, Swaplings, is a series of stylised, 3D-printed action figures that explore inclusion and diversity through modular design and the representation of disabilities.</p>
+        </div>
+    </section>
+
+    <section class="p-wrap renders">
+        <div class="renders-art">
+            <Fig folder="swaplings" src="renders1.jpg" alt="Rendered Swaplings character collection" ratio="3/2" sizes="(min-width: 1440px) 1330px, 94vw" widths={[960, 1440, 1920]} radius="22px" />
+        </div>
+        <div class="side-notes">
+            <Note>
+                Detachable limbs of varying shapes, sizes, and colours can be mixed and matched to encourage playful interaction beyond conventional toy norms - modularity lets people experiment and be creative, allowing them to make their own versions of toys they own.
+            </Note>
+            <Note>
+                Disabilities are part of the characters, but they are no more important than their shapes and personality, to ensure that representation is natural as opposed to tokenistic.
+            </Note>
+            <Note>
+                Tangible agency is offered through this modularity, and the combination with bold design aims to make a product line that is both socially conscious and creatively engaging.
+            </Note>
+        </div>
+    </section>
+
+    <section class="p-wrap proto">
+        <div class="proto-img">
+            <Fig folder="swaplings" src="eg1.jpg" alt="Swaplings character study, example one" ratio="16/9" sizes="(min-width: 1440px) 1330px, 94vw" widths={[960, 1440, 1920]} radius="22px" />
+        </div>
+        <div class="proto-img">
+            <Fig folder="swaplings" src="eg2.jpg" alt="Swaplings character study, example two" ratio="16/9" sizes="(min-width: 1440px) 1330px, 94vw" widths={[960, 1440, 1920]} radius="22px" />
+        </div>
+        <div class="proto-note">
+            <Note>
+                The 3D printed models were interactive prototypes that explored the modularity of the system. Additional accessories allow for absurd and creative play.
+            </Note>
+        </div>
+    </section>
+    <section class="p-wrap pack">
+        <Fig folder="swaplings" src="box.jpg" alt="Swaplings packaging box" ratio="3840/1490" sizes="(min-width: 1440px) 1330px, 94vw" widths={[960, 1440, 1920]} radius="22px" />
+        <div class="pack-row">
+            <div class="p-cell p-cell--stretch" style="--cell:893/1391"><Fig folder="swaplings" src="panel.jpg" alt="Swaplings character information panel" fill sizes="(min-width: 1200px) 430px, 94vw" radius="22px" /></div>
+            <div class="p-cell p-cell--stretch" style="--cell:4/3"><Fig folder="swaplings" src="logo.jpg" alt="Swaplings identity and logo artwork" fill sizes="(min-width: 1200px) 880px, 94vw" radius="22px" /></div>
+        </div>
+    </section>
+</ProjectShell>
+
+<style>
+    .hero {
+        display: grid;
+        justify-items: center;
+        padding: 1rem var(--pad) clamp(2rem, 4vw, 3rem);
+        background: linear-gradient(180deg, #fff 0%, #fff calc(100% - clamp(2rem, 4vw, 3rem)), var(--bg) 100%);
+    }
+
+    .hero :global(.hero-logo) {
+        width: min(100%, 58rem, calc(76svh * 4 / 3));
+        background: #fff;
+    }
+    .renders,
+    .proto {
+        display: grid;
+        gap: clamp(1rem, 2.5vw, 2rem);
+        padding-block: clamp(1rem, 3vw, 2rem);
+    }
+    .side-notes {
+        display: grid;
+        gap: 1.1rem 2rem;
+    }
+    .proto-note {
+        max-width: 34rem;
+    }
+
+    .pack {
+        display: grid;
+        gap: var(--gap);
+        padding-block: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem);
+    }
+
+    .pack-row {
+        display: grid;
+        gap: var(--gap);
+    }
+
+    @media (min-width: 900px) {
+
+        .side-notes {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .pack-row {
+            grid-template-columns: 1fr 2.077fr;
+        }
+    }
+</style>

@@ -1,0 +1,175 @@
+:root {
+    --pad: clamp(1.25rem, 5vw, 4rem);
+    --gap: clamp(0.6rem, 1.4vw, 1.25rem);
+    --display: 'EB Garamond', Garamond, 'Times New Roman', serif;
+}
+
+.p-wrap {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: var(--pad);
+}
+
+.p-eyebrow {
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.p-display {
+    margin: 0;
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+}
+
+.p-lede {
+    margin: 0;
+    font-size: clamp(1.05rem, 1.7vw, 1.4rem);
+    line-height: 1.5;
+}
+
+/* Wrapper that gives a filled figure a height: a ratio when stacked, the row height on desktop. */
+.p-cell {
+    position: relative;
+    min-width: 0;
+    aspect-ratio: var(--cell, 4 / 3);
+}
+
+.p-stack {
+    display: grid;
+    gap: var(--gap);
+    min-width: 0;
+}
+
+@media (min-width: 900px) {
+    .p-cell--stretch {
+        aspect-ratio: auto;
+    }
+}
+
+.p-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--stroke, #fff);
+}
+
+/* Opening statement: one shared treatment on every project page */
+.p-intro {
+    position: relative;
+    display: grid;
+    gap: 1rem;
+    max-width: 62rem;
+    margin-block: clamp(1rem, 3vw, 2rem);
+    padding: clamp(1.1rem, 2.4vw, 1.9rem) clamp(1.2rem, 2.8vw, 2.4rem);
+    border-left: 5px solid var(--accent);
+    border-radius: 0 18px 18px 0;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.p-intro-lead {
+    margin: 0;
+    font-size: clamp(1.02rem, 1.45vw, 1.28rem);
+    font-weight: 500;
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+}
+
+.p-intro-more {
+    display: grid;
+    gap: 0.8rem 2rem;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    opacity: 0.8;
+}
+
+.p-intro-more p {
+    margin: 0;
+}
+
+@media (min-width: 900px) {
+    .p-intro-more {
+        grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    }
+}
+/* Small supporting description beside or below images */
+.p-caption {
+    max-width: 34rem;
+    margin: 0;
+    padding-left: 1.1rem;
+    border-left: 3px solid var(--accent);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    opacity: 0.8;
+}
+
+/* Page titles: centred at the top, matching the cover artwork (Garamond bold italic / Helvetica bold) */
+.p-title {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    justify-items: center;
+    gap: 0.1em;
+    margin: 0;
+    padding-block: clamp(4.5rem, 11vw, 8.5rem) clamp(2rem, 5vw, 4rem);
+    text-align: center;
+    font-size: clamp(3.2rem, 8.6vw, 7rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    color: var(--title-ink, inherit);
+}
+
+.p-title .serif {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.p-title .sans {
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: -0.045em;
+}
+
+.p-title .small {
+    font-size: 0.4em;
+}
+
+.p-title .p-date,
+.p-date {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 700;
+    font-size: clamp(1.25rem, 2.1vw, 1.65rem);
+    letter-spacing: 0;
+    line-height: 1;
+    margin-top: 2.4rem;
+    color: var(--title-ink, inherit);
+}
+
+.p-date--solo {
+    margin: 0;
+    padding-block: 0.25rem 0.5rem;
+    text-align: center;
+    color: var(--title-ink, var(--ink));
+}
+
+.p-title--left {
+    justify-items: start;
+    text-align: left;
+}
+
+.p-title--over {
+    position: absolute;
+    inset: 0;
+    align-content: center;
+    padding-block: 0;
+}

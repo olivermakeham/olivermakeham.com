@@ -1,31 +1,85 @@
 ---
-import ImageGallery from '../components/ImageGallery.astro';
+import ProjectShell from '../components/ProjectShell.astro';
+import Fig from '../components/Fig.astro';
 
-const makeGallery = (name: string, images: string[]) => ({
-    type: 'gallery',
-    label: `${name} present design`,
-    images: images.map((src, index) => ({
-        src,
-        alt: `${name} present, design view ${index + 1}`,
-    })),
-});
-
-const blocks = [
-    {
-        type: 'text',
-        text: 'To celebrate the 21st birthdays of my friends, I made unique 3D models of them in Blender featuring exaggerated and absurd aspects of their characters and interests, which were then 3D printed and hand painted.',
-    },
-    makeGallery('Alec', ['alec1.jpg', 'alec2.jpg', 'alec3.jpg']),
-    makeGallery('Daire', ['daire1.jpg', 'daire2.jpg', 'daire3.jpg']),
-    makeGallery('Grace', ['grace1.jpg', 'grace2.jpg', 'grace3.jpg']),
-    makeGallery('Harlem', ['harlem1.jpg', 'harlem2.jpg', 'harlem3.jpg']),
-    makeGallery('Julian', ['julian1.jpg', 'julian2.jpg', 'julian3.jpg']),
-    makeGallery('Lewis', ['lewis1.jpg', 'lewis2.jpg']),
-    makeGallery('Luka', ['luka1.jpg', 'luka2.jpg', 'luka3.jpg']),
-    makeGallery('Marcus', ['marcus1.jpg', 'marcus2.jpg', 'marcus3.jpg']),
-    makeGallery('Oscar', ['oscar1.jpg', 'oscar2.jpg']),
-    makeGallery('Somer', ['somer1.jpg', 'somer2.jpg', 'somer3.jpg']),
+const people = [
+    { name: 'Alec', files: ['alec1', 'alec2', 'alec3'], v: 'feature' },
+    { name: 'Daire', files: ['daire1', 'daire2', 'daire3'], v: 'portrait' },
+    { name: 'Grace', files: ['grace1', 'grace2', 'grace3'], v: 'trio' },
+    { name: 'Harlem', files: ['harlem1', 'harlem2', 'harlem3'], v: 'feature' },
+    { name: 'Julian', files: ['julian1', 'julian2', 'julian3'], v: 'trio' },
+    { name: 'Lewis', files: ['lewis1', 'lewis2'], v: 'pair' },
+    { name: 'Luka', files: ['luka1', 'luka2', 'luka3'], v: 'feature' },
+    { name: 'Marcus', files: ['marcus1', 'marcus2', 'marcus3'], v: 'trio' },
+    { name: 'Oscar', files: ['oscar1', 'oscar2'], v: 'pair' },
+    { name: 'Somer', files: ['somer1', 'somer2', 'somer3'], v: 'feature' },
 ];
 ---
 
-<ImageGallery title="Presents for Friends" folder="presents" blocks={blocks} />
+<ProjectShell
+    title="Presents"
+    bg="#f4ebff"
+    ink="#2a1f3d"
+    accent="#ff6fa8"
+    class="presents"
+>
+    <h1 class="p-title"><span class="serif">Presents</span><span class="serif small">for</span><span class="serif">Friends</span><span class="p-date">2024 – present</span></h1>
+    <section class="p-wrap hero">
+        <div class="p-intro">
+            <p class="p-intro-lead">To celebrate the 21st birthdays of my friends, I made unique 3D models of them in Blender featuring exaggerated and absurd aspects of their characters and interests, which were then 3D printed and hand painted.</p>
+        </div>
+    </section>
+
+    {people.map((p, i) => (
+        <section class={`p-wrap person person--${p.v} ${i % 2 ? 'is-flip' : ''}`}>
+            <div class="person-grid">
+                {p.files.map((f, k) => {
+                    const portrait = p.v === 'portrait' && k > 0;
+                    const big = p.v === 'feature' && k === 0;
+                    const cell = portrait ? '780/1365' : p.v === 'trio' ? '4/5' : p.v === 'pair' ? '4/3' : big ? '4/3' : '4/3';
+                    return (
+                        <div class={`p-cell cell-${k} ${(big || (p.v === 'portrait' && k === 0)) ? 'p-cell--stretch' : ''}`} style={`--cell:${cell}`}>
+                            <Fig
+                                folder="presents"
+                                src={`${f}.jpg`}
+                                alt={`${p.name}'s 3D printed birthday figure, view ${k + 1}`}
+                                fill
+                                radius="18px"
+                                sizes={big ? '(min-width: 1200px) 760px, 94vw' : '(min-width: 1200px) 440px, 94vw'}
+                            />
+                        </div>
+                    );
+                })}
+            </div>
+        </section>
+    ))}
+</ProjectShell>
+
+<style>
+    :global(.presents) { overflow-x: clip; }
+    .hero { padding-block: clamp(5rem, 10vw, 7rem) clamp(1rem, 3vw, 2rem); }
+
+    .person { padding-block: clamp(1rem, 2.5vw, 2rem); }
+    .person-grid { display: grid; gap: var(--gap, 1rem); }
+
+    .person--trio .person-grid { grid-template-columns: repeat(3, 1fr); }
+    .person--pair .person-grid { grid-template-columns: 1fr 1fr; }
+    .person--feature .person-grid { grid-template-columns: 1.7fr 1fr; grid-template-rows: auto auto; }
+    .person--feature .cell-0 { grid-row: span 2; }
+    .person--feature.is-flip .person-grid { grid-template-columns: 1fr 1.7fr; }
+    .person--feature.is-flip .cell-0 { grid-column: 2; grid-row: 1 / span 2; }
+    .person--feature.is-flip .cell-1 { grid-column: 1; grid-row: 1; }
+    .person--feature.is-flip .cell-2 { grid-column: 1; grid-row: 2; }
+    .person--portrait .person-grid { grid-template-columns: 2.2fr 1fr 1fr; }
+
+    @media (max-width: 899px) {
+        .person--feature .person-grid, .person--feature.is-flip .person-grid { grid-template-columns: 1fr 1fr; }
+        .person--feature .cell-0, .person--feature.is-flip .cell-0 { grid-column: 1 / -1; grid-row: auto; }
+        .person--feature.is-flip .cell-1, .person--feature.is-flip .cell-2 { grid-column: auto; grid-row: auto; }
+        .person--portrait .person-grid { grid-template-columns: 1fr 1fr; }
+        .person--portrait .cell-0 { grid-column: 1 / -1; }
+        .person--trio .person-grid { grid-template-columns: 1fr 1fr; }
+        .person--trio .cell-0 { grid-column: 1 / -1; --cell: 4/3; }
+        .person--pair .person-grid { grid-template-columns: 1fr; }
+    }
+</style>

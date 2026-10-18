@@ -1,20 +1,68 @@
 ---
-import ImageGallery from '../components/ImageGallery.astro';
-
-const blocks = [
-    {
-        type: 'text',
-        text: 'I created this animation in Maya that follows a frog attempting to open a hatch through a series of escalating actions. It focuses on clear visual storytelling and physical comedy, with simple staging and exaggerated motion to keep the idea readable without the need of any dialogue.',
-    },
-    {
-        type: 'gallery',
-        label: 'Animation artwork and colour study',
-        images: [
-            { src: 'untitled.jpg', alt: 'Animation artwork' },
-            { src: 'untitledBright.jpg', alt: 'Animation artwork, bright colour study' },
-        ],
-    },
-];
+import ProjectShell from '../components/ProjectShell.astro';
 ---
 
-<ImageGallery title="Short Animation" folder="animation" blocks={blocks} />
+<ProjectShell
+    title="Short Animation"
+    bg="#150f0c"
+    ink="#f6ece3"
+    accent="#9be04a"
+    class="animation"
+>
+    <section class="p-wrap hero">
+        <h1 class="p-title p-title--flow"><span class="sans">Short Animation</span><span class="p-date">2025</span></h1>
+    </section>
+    <section class="p-wrap story">
+        <div class="p-intro">
+            <p class="p-intro-lead">I created this animation in Maya that follows a frog attempting to open a hatch through a series of escalating actions. It focuses on clear visual storytelling and physical comedy, with simple staging and exaggerated motion to keep the idea readable without the need of any dialogue.</p>
+        </div>
+    </section>
+
+    <section class="p-wrap film">
+        <video
+            controls
+            playsinline
+            preload="none"
+            poster="/video/frog-poster.jpg"
+            width="1920"
+            height="1080"
+            aria-label="Short animation featuring the frog and the robot"
+        >
+            <source src="/video/frog.mp4" type="video/mp4" />
+        </video>
+    </section>
+</ProjectShell>
+
+<style>
+    :global(.animation) {
+        background:
+            radial-gradient(80% 50% at 80% 0%, rgba(155, 224, 74, 0.14), transparent 70%),
+            var(--bg);
+    }
+
+    .hero {
+        padding-block: clamp(6rem, 11vw, 9rem) clamp(2rem, 5vw, 4rem);
+    }
+
+    :global(.animation .p-intro) {
+        background: none;
+    }
+
+    .film {
+        padding-bottom: clamp(3rem, 8vw, 6rem);
+    }
+
+    .film video {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        border-radius: 18px;
+        background: #000;
+    }
+
+    .hero h1 {
+        font-size: clamp(3rem, 9vw, 7.5rem);
+        padding-block: 0;
+    }
+</style>

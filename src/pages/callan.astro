@@ -1,77 +1,82 @@
 ---
-import ImageGallery from '../components/ImageGallery.astro';
+import ProjectShell from '../components/ProjectShell.astro';
+import Fig from '../components/Fig.astro';
 
-const blocks = [
+const f = (src: string, alt: string, ratio: string, extra: Record<string, unknown> = {}) => ({ src, alt, ratio, ...extra });
+const sections = [
     {
-        type: 'text',
-        text: "This Callan Park graphic wayfinding concept reimagines navigation as an experience that guides people through the park while encouraging personal reflection, using the site's mental health history, questioning prompts, and unconventional signage to subtly lead visitors through the landscape and engage them with both the place and their own thoughts.",
-    },
-    {
-        type: 'text',
         text: "An abstract ribbon with running text of someone's inner monologue acts as an entrance point that captures the attention of passer-bys.",
+        cls: 'stack', imgs: [f('a1.jpg', 'Ribbon entrance with running text, view one', '4/3'), f('a2.jpg', 'Ribbon entrance with running text, view two', '4/3')],
     },
     {
-        type: 'gallery',
-        label: 'Callan Park wayfinding ribbon',
-        images: [
-            { src: 'a1.jpg', alt: 'Callan Park graphic wayfinding study A, first view' },
-            { src: 'a2.jpg', alt: 'Callan Park graphic wayfinding study A, alternate view' },
-        ],
-    },
-    {
-        type: 'text',
         text: 'An example of a fragmented sign that encourages people to approach it, as it must be viewed from a certain angle to connect.',
+        cls: 'duo', imgs: [f('b1.jpg', 'Fragmented sign seen from a distance', '1/1'), f('b2.png', 'Fragmented sign connecting from the right angle', '1/1')],
     },
     {
-        type: 'gallery',
-        label: 'Callan Park fragmented signage',
-        images: [
-            { src: 'b1.jpg', alt: 'Callan Park graphic wayfinding study B, first view' },
-            { src: 'b2.png', alt: 'Callan Park graphic wayfinding study B, alternate view' },
-        ],
-    },
-    {
-        type: 'text',
         text: 'Text would be scattered across the park, persuading people to explore and respond to the prompts.',
+        cls: 'quad', imgs: [f('c1.jpg', 'Prompt text in the park, one', '1/1'), f('c2.jpg', 'Prompt text in the park, two', '1/1'), f('d1.png', 'Prompt text in the landscape, one', '4/3'), f('d2.png', 'Prompt text in the landscape, two', '4/3')],
     },
     {
-        type: 'gallery',
-        label: 'Callan Park wayfinding prompts',
-        images: [
-            { src: 'c1.jpg', alt: 'Callan Park graphic wayfinding study C, first view' },
-            { src: 'c2.jpg', alt: 'Callan Park graphic wayfinding study C, alternate view' },
-            { src: 'd1.png', alt: 'Callan Park graphic wayfinding study D, first view' },
-            { src: 'd2.png', alt: 'Callan Park graphic wayfinding study D, alternate view' },
-        ],
-    },
-    {
-        type: 'text',
         text: 'A concept for an interactive exhibit, where people can use chalk to answer the question anywhere they like.',
+        cls: 'feature', imgs: [f('e1.png', 'Chalk exhibit at night', '4/3'), f('e2.jpg', 'Chalk exhibit answers, one', '4/3'), f('e3.jpg', 'Chalk exhibit answers, two', '4/3')],
     },
     {
-        type: 'gallery',
-        label: 'Callan Park interactive exhibit',
-        images: [
-            { src: 'e1.png', alt: 'Callan Park graphic wayfinding study E, first view' },
-            { src: 'e2.jpg', alt: 'Callan Park graphic wayfinding study E, second view' },
-            { src: 'e3.jpg', alt: 'Callan Park graphic wayfinding study E, third view' },
-        ],
-    },
-    {
-        type: 'text',
         text: 'More questions and prompts are cut out of rusted steel to blend with the environment.',
-    },
-    {
-        type: 'gallery',
-        label: 'Callan Park rusted steel prompts',
-        images: [
-            { src: 'f1.jpg', alt: 'Callan Park study F, first view' },
-            { src: 'f2.jpg', alt: 'Callan Park study F, second view' },
-            { src: 'f3.jpg', alt: 'Callan Park study F, third view' },
-            { src: 'f4.jpg', alt: 'Callan Park study F, fourth view' },
-        ],
+        cls: 'grid4', imgs: [f('f1.jpg', 'Steel cut-out prompt, one', '1/1'), f('f2.jpg', 'Steel cut-out prompt, two', '1/1'), f('f3.jpg', 'Steel cut-out prompt, three', '1/1'), f('f4.jpg', 'Steel cut-out prompt, four', '1/1')],
     },
 ];
 ---
 
-<ImageGallery title="Graphic Wayfinding Concept" folder="callan" blocks={blocks} />
+<ProjectShell
+    title="Callan Park Wayfinding"
+    bg="#f6efe6"
+    ink="#2b1d14"
+    accent="#d95a00"
+    class="callan"
+>
+    <h1 class="p-title"><span class="serif">Graphic <span class="accent">Wayfinding</span></span><span class="serif">Concept</span><span class="p-date">2025</span></h1>
+    <section class="p-wrap hero">
+        <div class="p-intro">
+            <p class="p-intro-lead">This Callan Park graphic wayfinding concept reimagines navigation as an experience that guides people through the park while encouraging personal reflection, using the site's mental health history, questioning prompts, and unconventional signage to subtly lead visitors through the landscape and engage them with both the place and their own thoughts.</p>
+        </div>
+    </section>
+
+    {sections.map((s, si) => (
+        <section class={`p-wrap sec sec--${s.cls}`}>
+            {s.imgs.map((im, i) => (
+                <div class={`p-cell c${i}`} style={`--cell:${im.ratio}`}>
+                    <Fig folder="callan" src={im.src} alt={im.alt} fill eager={si === 0} radius="6px" sizes="(min-width: 1440px) 680px, (min-width: 900px) 50vw, 94vw" widths={[960, 1440, 1920]} />
+                </div>
+            ))}
+            <p class="p-caption sec-text">{s.text}</p>
+        </section>
+    ))}
+</ProjectShell>
+
+<style>
+    .hero { padding-block: 0 clamp(1.5rem, 4vw, 3rem); }
+    .p-title .accent { color: var(--accent); }
+
+    .sec { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap, 1rem); padding-block: clamp(1.5rem, 4vw, 3rem); }
+    .sec-text { grid-column: 1 / -1; margin: 0; }
+
+    .sec--stack .c0, .sec--stack .c1,
+    .sec--duo .c0, .sec--duo .c1,
+    .sec--quad .p-cell,
+    .sec--grid4 .p-cell { grid-column: span 6; }
+    .sec--feature .c0 { grid-column: 1 / 9; grid-row: 1 / span 2; }
+    .sec--feature .c1 { grid-column: 9 / 13; grid-row: 1; }
+    .sec--feature .c2 { grid-column: 9 / 13; grid-row: 2; }
+    .sec--feature .sec-text { grid-row: 3; }
+
+    @media (min-width: 900px) {
+        .sec--grid4 .p-cell { grid-column: span 3; }
+    }
+
+    @media (max-width: 899px) {
+        .sec--feature .c0 { grid-column: 1 / -1; grid-row: auto; }
+        .sec--feature .c1, .sec--feature .c2 { grid-column: span 6; grid-row: auto; }
+        .sec--feature .sec-text { grid-row: auto; }
+        .sec--stack .p-cell, .sec--duo .p-cell { grid-column: 1 / -1; }
+    }
+</style>

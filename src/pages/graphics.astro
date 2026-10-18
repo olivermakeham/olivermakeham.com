@@ -1,39 +1,93 @@
 ---
-import ImageGallery from '../components/ImageGallery.astro';
-
-const blocks = [
-    {
-        type: 'text',
-        text: 'This is a concept exhibition design language that explores geometric form and colour. The project uses shapes derived from a logo, with overlap and variation to create an expressive visual system. It also reflects the design values of the Australian Graphic Design Association, which was referenced in example text.',
-    },
-    {
-        type: 'text',
-        text: "The colourful letters of the logo symbolically overlap one another, and provide the basis of the exhibition's graphic language.",
-    },
-    {
-        type: 'text',
-        text: 'An entry wall that uses transparent acrylic to simulate blending effects in real life.',
-    },
-    {
-        type: 'text',
-        text: 'Concept pages for an exhibition booklet.',
-    },
-    {
-        type: 'text',
-        text: 'An example of an Instagram promotional tile of the exhibition.',
-    },
-    {
-        type: 'gallery',
-        label: 'Graphic exhibition concept',
-        images: [
-            { src: 'logo.jpg', alt: 'Graphic exhibition concept logo' },
-            { src: 'page1.jpg', alt: 'Graphic exhibition concept, printed page one' },
-            { src: 'page2.jpg', alt: 'Graphic exhibition concept, printed page two' },
-            { src: 'page3.jpg', alt: 'Graphic exhibition concept, printed page three' },
-            { src: 'insta.jpg', alt: 'Graphic exhibition concept social media artwork' },
-        ],
-    },
-];
+import ProjectShell from '../components/ProjectShell.astro';
+import Fig from '../components/Fig.astro';
 ---
 
-<ImageGallery title="Graphic Exhibition Concept" folder="graphics" blocks={blocks} />
+<ProjectShell
+    title="Graphic Exhibition"
+    bg="#ffffff"
+    ink="#16161a"
+    accent="#2f6bff"
+    class="graphics"
+>
+    <section class="p-wrap hero">
+        <div class="p-cell" style="--cell:1920/638">
+            <Fig folder="graphics" src="logo.jpg" alt="Exhibition logo with overlapping colourful letters" fill eager radius="0" sizes="(min-width: 1440px) 1330px, 94vw" widths={[960, 1440, 1920]} />
+        </div>
+    </section>
+    <p class="p-date p-date--solo">2024</p>
+
+    <section class="p-wrap story">
+        <div class="p-intro">
+            <p class="p-intro-lead">This is a concept exhibition design language that explores geometric form and colour. The project uses shapes derived from a logo, with overlap and variation to create an expressive visual system. It also reflects the design values of the Australian Graphic Design Association, which was referenced in example text.</p>
+        </div>
+    </section>
+    <section class="p-wrap pages">
+        <div class="pages-grid">
+            <div class="p-cell" style="--cell:1748/2480"><Fig folder="graphics" src="page1.jpg" alt="Exhibition booklet concept page one" fill radius="2px" sizes="(min-width: 1440px) 430px, (min-width: 700px) 31vw, 94vw" /></div>
+            <div class="p-cell" style="--cell:1748/2480"><Fig folder="graphics" src="page2.jpg" alt="Exhibition booklet concept page two" fill radius="2px" sizes="(min-width: 1440px) 430px, (min-width: 700px) 31vw, 94vw" /></div>
+            <div class="p-cell" style="--cell:1748/2480"><Fig folder="graphics" src="page3.jpg" alt="Exhibition booklet concept page three" fill radius="2px" sizes="(min-width: 1440px) 430px, (min-width: 700px) 31vw, 94vw" /></div>
+        </div>
+        <p class="p-caption">Concept booklet pages for the exhibition design language.</p>
+    </section>
+    <section class="p-wrap insta">
+        <div class="insta-grid">
+            <div class="p-cell" style="--cell:1/1"><Fig folder="graphics" src="insta.jpg" alt="Instagram promotional tile for the exhibition" fill radius="2px" sizes="(min-width: 1440px) 650px, (min-width: 700px) 47vw, 94vw" /></div>
+            <div class="p-cell" style="--cell:1/1"><Fig folder="graphics" src="palette.jpg" alt="Exhibition colour palettes: primary black and white, and eight secondary accent colours" fill radius="2px" sizes="(min-width: 1440px) 650px, (min-width: 700px) 47vw, 94vw" /></div>
+        </div>
+        <p class="p-caption">Instagram promotional tile, alongside the colour palette.</p>
+    </section>
+    <section class="end">
+        <div class="render">
+            <Fig folder="graphics" src="expandedGallery.webp" alt="Render of the exhibition gallery" ratio="2560/1638" sizes="100vw" widths={[960, 1440, 1920]} radius="0" />
+            <div class="seam" aria-hidden="true"></div>
+        </div>
+    </section>
+</ProjectShell>
+
+<style>
+    .hero { display: grid; align-content: center; min-height: 80svh; padding-block: 1rem; }
+    .story { padding-block: clamp(1rem, 3vw, 2rem); }
+
+    /* Full-bleed render at the end of the page, fading in from the page background */
+    :global(.project.graphics::after) { display: none; }
+    :global(body:has(.graphics)) { padding-bottom: 0; }
+    .end {
+        --blend: clamp(3rem, 6vw, 5rem);
+        margin-top: calc(var(--blend) * 1.5);
+        padding-top: var(--blend);
+        background-color: #f4f4f2;
+        background-image: linear-gradient(180deg, #fff 0, #f4f4f2 var(--blend));
+        background-size: 100% var(--blend);
+        background-repeat: no-repeat;
+    }
+
+    .render { position: relative; }
+    /* Light blur softening the AI-extended floor, fading out by the foot */
+    .seam {
+        position: absolute;
+        inset: 85% 0 6% 0;
+        pointer-events: none;
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        mask-image: linear-gradient(180deg, transparent, #000 35%, #000 55%, transparent);
+        -webkit-mask-image: linear-gradient(180deg, transparent, #000 35%, #000 55%, transparent);
+    }
+
+    .pages { --step: clamp(1.5rem, 4.5vw, 4rem); display: grid; gap: 1rem; padding-block: clamp(2rem, 5vw, 4rem) 0; }
+    .pages-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); align-items: start; }
+    .pages-grid > :nth-child(2) { margin-top: var(--step); }
+    .pages-grid > :nth-child(3) { margin-top: calc(var(--step) * 2); }
+    /* Tuck the caption under the first (highest) page */
+    .pages > .p-caption { margin-top: calc(var(--step) * -1 - 1rem); align-self: start; }
+    .insta { position: relative; z-index: 1; display: grid; gap: 1rem; padding-block: clamp(5rem, 12vw, 9rem) 0; }
+    .insta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3rem, 10vw, 9rem); width: min(100%, 860px); margin-inline: auto; align-items: start; }
+    .insta-grid > :nth-child(2) { margin-top: clamp(1.5rem, 4.5vw, 4rem); transform: scale(1.35); transform-origin: top left; mix-blend-mode: multiply; }
+
+    @media (max-width: 700px) {
+        .pages-grid, .insta-grid { grid-template-columns: 1fr; }
+        .pages-grid > *, .insta-grid > * { margin-top: 0 !important; }
+        .pages > .p-caption { margin-top: 0; }
+        .insta-grid > :nth-child(2) { transform: none; }
+    }
+</style>

@@ -1,0 +1,491 @@
+<div class="lb" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+    <div class="lb-backdrop"></div>
+    <div class="lb-stage">
+        <img class="lb-lo" alt="" loading="lazy" decoding="async" />
+    </div>
+    <p class="lb-caption" aria-live="polite"></p>
+    <span class="lb-count" aria-hidden="true"></span>
+    <button class="lb-btn lb-close" type="button" aria-label="Close image viewer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+    </button>
+    <button class="lb-btn lb-nav lb-prev" type="button" aria-label="Previous image">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+    </button>
+    <button class="lb-btn lb-nav lb-next" type="button" aria-label="Next image">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+    </button>
+</div>
+
+<script>
+    const root = document.querySelector<HTMLElement>('.lb');
+
+    if (root) {
+        const stage = root.querySelector<HTMLElement>('.lb-stage')!;
+        const lo = root.querySelector<HTMLImageElement>('.lb-lo')!;
+        const caption = root.querySelector<HTMLElement>('.lb-caption')!;
+        const count = root.querySelector<HTMLElement>('.lb-count')!;
+        const closeBtn = root.querySelector<HTMLButtonElement>('.lb-close')!;
+        const prevBtn = root.querySelector<HTMLButtonElement>('.lb-prev')!;
+        const nextBtn = root.querySelector<HTMLButtonElement>('.lb-next')!;
+        const backdrop = root.querySelector<HTMLElement>('.lb-backdrop')!;
+
+        const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
+        // Animation lengths collapse to zero when motion is switched off
+        const D = (ms: number) => (document.documentElement.classList.contains('no-motion') ? 0 : ms);
+        let current: HTMLElement | null = null;
+        let hi: HTMLElement | null = null;
+        let isOpen = false;
+        let busy: Animation[] = [];
+        let lastFocus: HTMLElement | null = null;
+
+        type Box = { left: number; top: number; width: number; height: number };
+
+        const groupMembers = (fig: HTMLElement) => {
+            const key = fig.dataset.zoom || 'all';
+            return Array.from(document.querySelectorAll<HTMLElement>('[data-zoom]')).filter(
+                (el) => (el.dataset.zoom || 'all') === key,
+            );
+        };
+
+        const imgOf = (fig: HTMLElement) => fig.querySelector<HTMLImageElement>('img')!;
+
+        const naturalSize = (img: HTMLImageElement) => {
+            const w = img.naturalWidth || Number(img.getAttribute('width')) || img.width || 1600;
+            const h = img.naturalHeight || Number(img.getAttribute('height')) || img.height || 900;
+            return { w, h };
+        };
+
+        const finalBox = (img: HTMLImageElement): Box => {
+            const { w, h } = naturalSize(img);
+            const maxW = window.innerWidth * 0.94;
+            const maxH = window.innerHeight * 0.86;
+            const scale = Math.min(maxW / w, maxH / h);
+            const width = w * scale;
+            const height = h * scale;
+            return {
+                left: (window.innerWidth - width) / 2,
+                top: (window.innerHeight - height) / 2 - window.innerHeight * 0.02,
+                width,
+                height,
+            };
+        };
+
+        const parsePosition = (value: string): [number, number] => {
+            const parts = value.split(' ').map((part) => (part.endsWith('%') ? parseFloat(part) / 100 : 0.5));
+            return [parts[0] ?? 0.5, parts[1] ?? parts[0] ?? 0.5];
+        };
+
+        // Full-image box plus the clip that reproduces the cropped thumbnail.
+        const sourceState = (img: HTMLImageElement) => {
+            const rect = img.getBoundingClientRect();
+            const style = getComputedStyle(img);
+            const { w, h } = naturalSize(img);
+            const fit = style.objectFit;
+            let scale = Math.min(rect.width / w, rect.height / h);
+            if (fit === 'cover') scale = Math.max(rect.width / w, rect.height / h);
+            const bw = fit === 'fill' ? rect.width : w * scale;
+            const bh = fit === 'fill' ? rect.height : h * scale;
+            const [px, py] = parsePosition(style.objectPosition);
+            const left = rect.left + (rect.width - bw) * px;
+            const top = rect.top + (rect.height - bh) * py;
+            const radius = Math.max(0, parseFloat(getComputedStyle(img.closest('figure') ?? img).borderTopLeftRadius) || 0);
+            const inset = (v: number) => Math.max(0, v).toFixed(1);
+            return {
+                box: { left, top, width: bw, height: bh } as Box,
+                clip: `inset(${inset(rect.top - top)}px ${inset(left + bw - rect.right)}px ${inset(top + bh - rect.bottom)}px ${inset(rect.left - left)}px round ${radius}px)`,
+                onScreen: rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth,
+            };
+        };
+
+        const place = (box: Box) => {
+            stage.style.left = `${box.left}px`;
+            stage.style.top = `${box.top}px`;
+            stage.style.width = `${box.width}px`;
+            stage.style.height = `${box.height}px`;
+        };
+
+        const frameOf = (box: Box, clip: string) => ({
+            left: `${box.left}px`,
+            top: `${box.top}px`,
+            width: `${box.width}px`,
+            height: `${box.height}px`,
+            clipPath: clip,
+        });
+
+        const run = (animation: Animation) => {
+            busy.push(animation);
+            return animation.finished.catch(() => undefined);
+        };
+
+        const cancelAll = () => {
+            busy.forEach((animation) => animation.cancel());
+            busy = [];
+        };
+
+        const buildHi = (fig: HTMLElement, box: Box) => {
+            hi?.remove();
+            hi = null;
+            const source = fig.querySelector<HTMLElement>('picture') ?? imgOf(fig);
+            const clone = source.cloneNode(true) as HTMLElement;
+            const sizes = `${Math.ceil(box.width)}px`;
+            const targets = clone.matches('img') ? [clone] : Array.from(clone.querySelectorAll('source, img'));
+            targets.forEach((el) => el.setAttribute('sizes', sizes));
+            const img = clone.matches('img') ? (clone as HTMLImageElement) : clone.querySelector('img')!;
+            img.removeAttribute('class');
+            img.removeAttribute('style');
+            img.setAttribute('loading', 'eager');
+            img.setAttribute('decoding', 'async');
+            img.alt = '';
+            img.className = 'lb-hi';
+            const reveal = () => img.classList.add('is-ready');
+            img.addEventListener('load', reveal, { once: true });
+            stage.appendChild(clone);
+            hi = clone;
+            if (img.complete && img.naturalWidth) reveal();
+        };
+
+        const captionOf = (fig: HTMLElement) => {
+            const text = fig.querySelector('figcaption')?.textContent?.trim() || imgOf(fig).alt || '';
+            return text;
+        };
+
+        const fill = (fig: HTMLElement) => {
+            const img = imgOf(fig);
+            const box = finalBox(img);
+            lo.src = img.currentSrc || img.src;
+            place(box);
+            buildHi(fig, box);
+            caption.textContent = captionOf(fig);
+            const members = groupMembers(fig);
+            const index = members.indexOf(fig);
+            count.textContent = members.length > 1 ? `${index + 1} / ${members.length}` : '';
+            prevBtn.hidden = nextBtn.hidden = members.length < 2;
+            return box;
+        };
+
+        const hideSource = (fig: HTMLElement | null, hidden: boolean) => {
+            if (fig) imgOf(fig).style.visibility = hidden ? 'hidden' : '';
+        };
+
+        const scrollbarWidth = () => window.innerWidth - document.documentElement.clientWidth;
+
+        const open = (fig: HTMLElement) => {
+            if (isOpen) return;
+            isOpen = true;
+            current = fig;
+            lastFocus = document.activeElement as HTMLElement | null;
+            const start = sourceState(imgOf(fig));
+            const end = fill(fig);
+            document.body.style.paddingRight = `${scrollbarWidth()}px`;
+            document.body.style.overflow = 'hidden';
+            root.hidden = false;
+            root.classList.remove('is-closing');
+            root.classList.add('is-open');
+            hideSource(fig, true);
+            cancelAll();
+            run(
+                stage.animate([frameOf(start.box, start.clip), frameOf(end, 'inset(0px round 12px)')], {
+                    duration: D(620),
+                    easing: EASE,
+                    fill: 'both',
+                }),
+            );
+            run(backdrop.animate([{ opacity: 0 }, { opacity: 1 }], { duration: D(420), easing: 'ease-out', fill: 'both' }));
+            closeBtn.focus({ preventScroll: true });
+        };
+
+        const finishClose = () => {
+            cancelAll();
+            hideSource(current, false);
+            hi?.remove();
+            hi = null;
+            lo.removeAttribute('src');
+            root.hidden = true;
+            root.classList.remove('is-open', 'is-closing');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            isOpen = false;
+            const target = current;
+            current = null;
+            (lastFocus && document.contains(lastFocus) ? lastFocus : target)?.focus({ preventScroll: true });
+        };
+
+        const close = () => {
+            if (!isOpen || !current) return;
+            root.classList.add('is-closing');
+            const start = sourceState(imgOf(current));
+            const from = stage.getBoundingClientRect();
+            cancelAll();
+            place({ left: from.left, top: from.top, width: from.width, height: from.height });
+            const frames = start.onScreen
+                ? [frameOf({ left: from.left, top: from.top, width: from.width, height: from.height }, 'inset(0px round 12px)'), frameOf(start.box, start.clip)]
+                : [
+                      { opacity: 1, transform: 'scale(1)' },
+                      { opacity: 0, transform: 'scale(0.94)' },
+                  ];
+            const motion = run(stage.animate(frames, { duration: D(start.onScreen ? 480 : 260), easing: EASE, fill: 'both' }));
+            run(backdrop.animate([{ opacity: 1 }, { opacity: 0 }], { duration: D(420), easing: 'ease-in', fill: 'both' }));
+            motion.then(finishClose);
+        };
+
+        const step = (direction: number) => {
+            if (!isOpen || !current) return;
+            const members = groupMembers(current);
+            const next = members[(members.indexOf(current) + direction + members.length) % members.length];
+            if (!next || next === current) return;
+            cancelAll();
+            const previous = current;
+            const out = stage.animate(
+                [{ opacity: 1, transform: 'translateX(0)' }, { opacity: 0, transform: `translateX(${-direction * 40}px)` }],
+                { duration: D(160), easing: 'ease-in', fill: 'both' },
+            );
+            run(out).then(() => {
+                hideSource(previous, false);
+                current = next;
+                fill(next);
+                stage.style.clipPath = 'inset(0px round 12px)';
+                hideSource(next, true);
+                cancelAll();
+                run(
+                    stage.animate(
+                        [{ opacity: 0, transform: `translateX(${direction * 40}px)` }, { opacity: 1, transform: 'translateX(0)' }],
+                        { duration: D(320), easing: EASE, fill: 'both' },
+                    ),
+                );
+                next.scrollIntoView({ block: 'nearest', behavior: 'instant' as ScrollBehavior });
+            });
+        };
+
+        document.addEventListener('click', (event) => {
+            const target = event.target as HTMLElement;
+            if (isOpen) return;
+            const fig = target.closest<HTMLElement>('[data-zoom]');
+            if (!fig || target.closest('a, button')) return;
+            open(fig);
+        });
+
+        document.querySelectorAll<HTMLElement>('[data-zoom]').forEach((fig) => {
+            fig.tabIndex = 0;
+            fig.setAttribute('role', 'button');
+            fig.setAttribute('aria-label', `View larger: ${imgOf(fig)?.alt ?? 'image'}`);
+        });
+
+        document.addEventListener('keydown', (event) => {
+            const target = event.target as HTMLElement;
+            if (!isOpen) {
+                if ((event.key === 'Enter' || event.key === ' ') && target.matches?.('[data-zoom]')) {
+                    event.preventDefault();
+                    open(target);
+                }
+                return;
+            }
+            if (event.key === 'Escape') close();
+            else if (event.key === 'ArrowRight') step(1);
+            else if (event.key === 'ArrowLeft') step(-1);
+            else if (event.key === 'Tab') {
+                const focusable = [closeBtn, prevBtn, nextBtn].filter((b) => !b.hidden);
+                const index = focusable.indexOf(document.activeElement as HTMLButtonElement);
+                const next = event.shiftKey ? index - 1 : index + 1;
+                focusable[(next + focusable.length) % focusable.length].focus();
+                event.preventDefault();
+            }
+        });
+
+        closeBtn.addEventListener('click', close);
+        prevBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            step(-1);
+        });
+        nextBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            step(1);
+        });
+        root.addEventListener('click', (event) => {
+            if ((event.target as HTMLElement).closest('.lb-btn')) return;
+            close();
+        });
+
+        let swipeX = 0;
+        root.addEventListener('pointerdown', (event) => {
+            swipeX = event.clientX;
+        });
+        root.addEventListener('pointerup', (event) => {
+            const dx = event.clientX - swipeX;
+            if (Math.abs(dx) > 60 && event.pointerType === 'touch') {
+                step(dx < 0 ? 1 : -1);
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            if (!isOpen || !current || busy.some((a) => a.playState === 'running')) return;
+            cancelAll();
+            place(finalBox(imgOf(current)));
+        });
+    }
+</script>
+
+<style>
+    .lb {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .lb[hidden] {
+        display: none;
+    }
+
+    .lb-backdrop {
+        position: absolute;
+        inset: 0;
+        background: color-mix(in srgb, var(--page-bg, #111) 22%, rgba(8, 8, 10, 0.9));
+        backdrop-filter: blur(22px) saturate(1.2);
+        -webkit-backdrop-filter: blur(22px) saturate(1.2);
+    }
+
+    .lb-stage {
+        position: fixed;
+        overflow: hidden;
+        cursor: zoom-out;
+        box-shadow: 0 40px 120px rgba(0, 0, 0, 0.45);
+        will-change: left, top, width, height, clip-path;
+    }
+
+    .lb-stage img {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+    }
+
+    .lb-stage :global(.lb-hi) {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+    }
+
+    .lb-stage :global(.lb-hi.is-ready) {
+        opacity: 1;
+    }
+
+    .lb-caption,
+    .lb-count {
+        position: absolute;
+        bottom: clamp(0.9rem, 3vh, 1.8rem);
+        margin: 0;
+        font-size: 0.85rem;
+        letter-spacing: 0.01em;
+        color: rgba(255, 255, 255, 0.78);
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    .lb-caption {
+        left: 50%;
+        max-width: min(70ch, 70vw);
+        text-align: center;
+        translate: -50% 0;
+    }
+
+    .lb-count {
+        right: clamp(1rem, 3vw, 2rem);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .lb.is-open .lb-caption,
+    .lb.is-open .lb-count {
+        opacity: 1;
+        transform: none;
+        transition: opacity 0.5s ease 0.35s, transform 0.5s ease 0.35s;
+    }
+
+    .lb.is-closing .lb-caption,
+    .lb.is-closing .lb-count,
+    .lb.is-closing .lb-btn {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .lb-btn {
+        position: absolute;
+        display: grid;
+        place-items: center;
+        width: 2.8rem;
+        height: 2.8rem;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .lb-btn:hover {
+        background: rgba(255, 255, 255, 0.28);
+    }
+
+    .lb-btn:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 3px;
+    }
+
+    .lb-btn[hidden] {
+        display: none;
+    }
+
+    .lb-btn svg {
+        width: 1.3rem;
+        height: 1.3rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .lb-close {
+        top: clamp(0.8rem, 2.5vh, 1.6rem);
+        right: clamp(0.8rem, 2.5vw, 1.6rem);
+    }
+
+    .lb-nav {
+        top: 50%;
+        margin-top: -1.4rem;
+    }
+
+    .lb-prev {
+        left: clamp(0.6rem, 2vw, 1.6rem);
+    }
+
+    .lb-next {
+        right: clamp(0.6rem, 2vw, 1.6rem);
+    }
+
+    @media (max-width: 700px) {
+        .lb-nav {
+            top: auto;
+            bottom: 0.7rem;
+            margin-top: 0;
+        }
+
+        .lb-count {
+            display: none;
+        }
+
+        .lb-caption {
+            bottom: 4.2rem;
+            max-width: 86vw;
+        }
+    }
+</style>

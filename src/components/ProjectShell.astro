@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/project.css';
+
+interface Props {
+    title: string;
+    bg: string;
+    ink: string;
+    accent: string;
+    class?: string;
+}
+
+const { title, bg, ink, accent, class: className } = Astro.props;
+---
+
+<Layout title={`${title} — Oliver Makeham`} bg={bg} ink={ink} lightbox>
+    <main class:list={['project', className]} style={`--bg:${bg};--ink:${ink};--accent:${accent}`}>
+        <slot />
+    </main>
+</Layout>
+
+<style>
+    .project {
+        position: relative;
+        overflow-x: clip;
+        min-height: 100svh;
+        color: var(--ink);
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+    }
+
+    .project :global(*) {
+        box-sizing: border-box;
+    }
+
+    /* Breathing room above the card hand at the end of each page */
+    .project::after {
+        content: '';
+        display: block;
+        height: clamp(3rem, 8vw, 6rem);
+    }
+</style>

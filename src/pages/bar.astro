@@ -1,47 +1,69 @@
 ---
-import ImageGallery from '../components/ImageGallery.astro';
+import ProjectShell from '../components/ProjectShell.astro';
+import Fig from '../components/Fig.astro';
 
-const blocks = [
-    {
-        type: 'text',
-        text: 'Modelled and rendered in Maya, this brutalist, industrial bar sits atop a modern skyscraper. It caters to wealthy customers who use the space to let loose, and the aftermath of an intense night of drinking and fighting is captured in the morning light streaming through the windows.',
-    },
-    {
-        type: 'image',
-        image: { src: 's.jpg', alt: 'Bar Scene concept render' },
-    },
-    {
-        type: 'gallery',
-        label: 'Bar Scene interior studies',
-        images: [
-            { src: 's1.jpg', alt: 'Bar Scene interior study one' },
-            { src: 's2.jpg', alt: 'Bar Scene interior study two' },
-            { src: 's3.jpg', alt: 'Bar Scene interior study three' },
-        ],
-    },
-    {
-        type: 'gallery',
-        label: 'Bar Scene detail studies',
-        images: [
-            { src: 's4.jpg', alt: 'Bar Scene detail study four' },
-            { src: 's5.jpg', alt: 'Bar Scene detail study five' },
-            { src: 's6.jpg', alt: 'Bar Scene detail study six' },
-            { src: 's7.jpg', alt: 'Bar Scene detail study seven' },
-        ],
-    },
-    {
-        type: 'text',
-        text: 'This scene, modelled and rendered in Maya, is a brutalist and industrial bar situated atop a modern skyscraper, catering to wealthy customers who have used the space to let loose and engage in rowdy behaviour, and this is captured in the aftermath of an intense night of drinking and fighting, illuminated by the morning light through the windows.',
-    },
-    {
-        type: 'gallery',
-        label: 'Bar Scene alternate studies',
-        images: [
-            { src: 'w.jpg', alt: 'Bar Scene alternate interior study one' },
-            { src: 'w2.jpg', alt: 'Bar Scene alternate interior study two' },
-        ],
-    },
+const rows = [
+    ['s1', 's2'],
+    ['s3', 's4', 's5'],
+    ['s6', 's7'],
 ];
 ---
 
-<ImageGallery title="Bar Scene" folder="bar" blocks={blocks} />
+<ProjectShell
+    title="Bar Scene"
+    bg="#0e0b09"
+    ink="#f3e6d3"
+    accent="#ffb347"
+    class="bar"
+>
+    <section class="hero">
+        <div class="p-cell" style="--cell:3/2">
+            <Fig folder="bar" src="s.jpg" alt="Brutalist rooftop bar in morning light" fill eager zoom radius="0" sizes="100vw" widths={[960, 1440, 1920]} />
+        </div>
+        <div class="hero-shade" aria-hidden="true"></div>
+        <h1 class="p-title p-title--over"><span class="serif">Bar Scene</span><span class="p-date">2024</span></h1>
+    </section>
+
+    <section class="p-wrap story">
+        <div class="p-intro">
+            <p class="p-intro-lead">Modelled and rendered in Maya, this brutalist, industrial bar sits atop a modern skyscraper. It caters to wealthy customers who use the space to let loose, and the aftermath of an intense night of drinking and fighting is captured in the morning light streaming through the windows.</p>
+        </div>
+    </section>
+
+    <section class="p-wrap mosaic">
+        {rows.map((r, ri) => (
+            <div class={`row row--${r.length}`}>
+                {r.map((s, i) => (
+                    <div class="p-cell" style="--cell:3/2">
+                        <Fig folder="bar" src={`${s}.jpg`} alt={`Bar scene detail ${s.replace('s', '')}`} fill radius="2px" sizes={r.length === 3 ? '(min-width: 1200px) 440px, 94vw' : '(min-width: 1200px) 660px, 94vw'} />
+                    </div>
+                ))}
+            </div>
+        ))}
+    </section>
+
+    <section class="wide">
+        <div class="p-cell" style="--cell:16/9"><Fig folder="bar" src="w.jpg" alt="Wide view of the bar interior" fill radius="0" sizes="100vw" widths={[960, 1440, 1920]} /></div>
+        <div class="p-cell" style="--cell:16/9"><Fig folder="bar" src="w2.jpg" alt="Second wide view of the bar interior" fill radius="0" sizes="100vw" widths={[960, 1440, 1920]} /></div>
+    </section>
+</ProjectShell>
+
+<style>
+    .hero { position: relative; }
+    .hero .p-cell { --cell: 3/2; max-height: 80svh; width: 100%; aspect-ratio: 3/2; }
+    .hero-shade { position: absolute; inset: 0; background: linear-gradient(to top, #0e0b09 4%, rgba(14, 11, 9, .15) 45%, rgba(14, 11, 9, .6)); pointer-events: none; }
+    .hero .p-title { text-shadow: 0 4px 30px rgba(0, 0, 0, .5); }
+    .story { padding-block: clamp(1rem, 3vw, 2rem); }
+
+    .mosaic { display: grid; gap: var(--gap, 1rem); }
+    .row { display: grid; gap: var(--gap, 1rem); }
+    .row--2 { grid-template-columns: 1fr 1fr; }
+    .row--3 { grid-template-columns: repeat(3, 1fr); }
+        .wide { display: grid; gap: var(--gap, 1rem); padding-block: clamp(1rem, 3vw, 2rem); }
+
+    @media (max-width: 899px) {
+        .hero .p-cell { aspect-ratio: 4/5; }
+        .row--3 { grid-template-columns: 1fr 1fr; }
+        .row--3 .p-cell:first-child { grid-column: 1 / -1; }
+    }
+</style>

@@ -1,270 +1,246 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import ProjectShell from '../components/ProjectShell.astro';
+import Fig from '../components/Fig.astro';
+import Note from '../components/Note.astro';
+import { asset } from '../lib/images';
 
-const groups = [
-    {
-        name: 'BLUE',
-        rows: [['BLUE_w1.jpg', 'BLUE_s1.jpg', 'BLUE_s2.jpg']],
-    },
-    {
-        name: 'FACT',
-        rows: [['FACT_w1.jpg', 'FACT_w2.jpg'], ['FACT_s1.jpg', 'FACT_s2.jpg', 'FACT_s3.jpg']],
-    },
-    {
-        name: 'HOUSE',
-        rows: [['HOUSE_w1.jpg', 'HOUSE_s1.jpg'], ['HOUSE_s2.jpg', 'HOUSE_s3.jpg', 'HOUSE_s4.jpg']],
-    },
-    {
-        name: 'LAND',
-        rows: [['LAND_s1.jpg', 'LAND_w1.jpg', 'LAND_w2.jpg']],
-    },
-    {
-        name: 'YARD',
-        rows: [
-            ['YARD_s1.jpg', 'YARD_s2.jpg', 'YARD_s3.jpg'],
-            ['YARD_s4.jpg', 'YARD_w2.jpg', 'YARD_w3.jpg'],
-        ],
-    },
-];
+const playUrl = 'https://play.unity.com/en/games/66fbb1cd-a9c6-416e-8ee3-215a7967907d/oliver-makeham-3d-environment';
+const alt = 'Game environment artwork';
+const small = '(min-width: 1440px) 460px, (min-width: 900px) 30vw, 50vw';
+const mid = '(min-width: 1440px) 680px, (min-width: 900px) 46vw, 100vw';
+const big = '(min-width: 1440px) 960px, (min-width: 900px) 64vw, 100vw';
 ---
 
-<Layout title="Interactive Realtime Environment — Oliver Makeham">
-    <main class="game-page">
-        <header class="intro">
-            <h1>Interactive Realtime Environment</h1>
-        </header>
-
-        <div class="project-copy">
-            <p>I made this explorable 3D space in Unity to explore a story through environmental design, without the need for instructional text or exposition. The player navigates the empty factory to examine damage within a facility, piecing together the mysterious disappearance of its sole worker. It establishes a stark juxtaposition visually, with the dull, lonely colours of the exterior contrasted by the vibrant, warm interior, balancing corporate blue coldness with natural warmth. The model and textures are stylised with low poly geometry and painterly textures, which also allowed for a greater range of assets to be created in a shorter period of time. Integrated scripts manage animations, sound effects and custom music, and particle systems that emphasise the emptiness and solitude of the facility. Exploration is also mechanically driven as it requires players to search the environment for a keycard that unlock the main blast door at the end.</p>
-            <p>I was responsible for the entire production of the game, from the original modelling, texturing, layout, music and more.</p>
+<ProjectShell
+    title="Interactive Realtime Environment"
+    bg="#0b1620"
+    ink="#e9f1f7"
+    accent="#ffa94d"
+    class="game"
+>
+    <section class="hero">
+        <div class="hero-img">
+            <Fig folder="game" src="YARD_w1.jpg" alt="Wide view of the yard" fill eager radius="0" sizes="100vw" widths={[960, 1440, 1920]} pos="50% 60%" />
         </div>
+        <h1 class="p-title p-title--over"><span class="serif">Interactive</span><span class="sans" style="font-size:1.25em">3D</span><span class="serif">Environment</span><span class="p-date">2025</span></h1>
+    </section>
 
-        <figure class="overview">
-            <img
-                src="/jpg_game/YARD_w1.jpg"
-                alt="Wide view of the yard"
-                loading="eager"
-                decoding="async"
-            />
-        </figure>
-
-        <div class="groups">
-            {groups.map((group) => (
-                <section class="gallery" aria-label={`${group.name} game artwork`}>
-                    {group.rows.map((row) => (
-                        <div class="gallery-row">
-                            {row.map((image) => (
-                                <figure class:list={['tile', image.includes('_w') && 'tile--wide']}>
-                                    <img
-                                        src={`/jpg_game/${image}`}
-                                        alt="Game environment artwork"
-                                        loading="lazy"
-                                        decoding="async"
-                                    />
-                                </figure>
-                            ))}
-                        </div>
-                    ))}
-                </section>
-            ))}
+    <section class="p-wrap">
+        <div class="p-intro">
+            <p class="p-intro-lead">A story told through environmental design, without instructional text or exposition. The player navigates the empty factory to examine damage within a facility, piecing together the mysterious disappearance of its sole worker. I was responsible for the entire production of the game, from the original modelling, texturing, layout, music and more.</p>
         </div>
+    </section>
 
-        <figure class="overview overview--final">
-            <img
-                src="/jpg_game/OVERVIEW.jpg"
-                alt="Aerial overview of the game site"
-                loading="lazy"
-                decoding="async"
-            />
-        </figure>
+    <section class="p-wrap chapter">
+        <div class="mosaic mosaic--blue">
+            <div class="p-cell p-cell--stretch" style="--cell:16/9"><Fig folder="game" src="BLUE_w1.jpg" alt={alt} fill sizes={big} /></div>
+            <div class="p-stack">
+                <div class="p-cell" style="--cell:4/3"><Fig folder="game" src="BLUE_s1.jpg" alt={alt} fill sizes={small} /></div>
+                <div class="p-cell" style="--cell:4/3"><Fig folder="game" src="BLUE_s2.jpg" alt={alt} fill sizes={small} /></div>
+            </div>
+        </div>
+        <Note>
+            It establishes a stark juxtaposition visually, with the dull, lonely colours of the exterior contrasted by the vibrant, warm interior, balancing corporate blue coldness with natural warmth.
+        </Note>
+    </section>
 
-        <a
-            class="door-link"
-            href="https://play.unity.com/en/games/66fbb1cd-a9c6-416e-8ee3-215a7967907d/oliver-makeham-3d-environment"
-            aria-label="Play Oliver Makeham's 3D environment game"
-        >
-            <span class="door-window" aria-hidden="true"></span>
-            <img src="/jpg_game/door.png" alt="" loading="lazy" decoding="async" />
+    <section class="p-wrap chapter">
+        <div class="mosaic mosaic--two">
+            <div class="p-cell" style="--cell:16/9"><Fig folder="game" src="FACT_w1.jpg" alt={alt} fill sizes={mid} /></div>
+            <div class="p-cell" style="--cell:16/9"><Fig folder="game" src="FACT_w2.jpg" alt={alt} fill sizes={mid} /></div>
+        </div>
+        <div class="mosaic mosaic--three">
+            <div class="p-cell"><Fig folder="game" src="FACT_s1.jpg" alt={alt} fill sizes={small} /></div>
+            <div class="p-cell"><Fig folder="game" src="FACT_s2.jpg" alt={alt} fill sizes={small} /></div>
+            <div class="p-cell"><Fig folder="game" src="FACT_s3.jpg" alt={alt} fill sizes={small} /></div>
+        </div>
+        <Note>
+            Integrated scripts manage animations, sound effects and custom music, and particle systems that emphasise the emptiness and solitude of the facility.
+        </Note>
+    </section>
+
+    <section class="p-wrap chapter">
+        <div class="mosaic mosaic--house">
+            <div class="p-cell p-cell--stretch" style="--cell:16/9"><Fig folder="game" src="HOUSE_w1.jpg" alt={alt} fill sizes={big} /></div>
+            <div class="p-cell p-cell--stretch" style="--cell:4/3"><Fig folder="game" src="HOUSE_s1.jpg" alt={alt} fill sizes={mid} /></div>
+        </div>
+        <div class="mosaic mosaic--three">
+            <div class="p-cell"><Fig folder="game" src="HOUSE_s2.jpg" alt={alt} fill sizes={small} /></div>
+            <div class="p-cell"><Fig folder="game" src="HOUSE_s3.jpg" alt={alt} fill sizes={small} /></div>
+            <div class="p-cell"><Fig folder="game" src="HOUSE_s4.jpg" alt={alt} fill sizes={small} /></div>
+        </div>
+        <Note>
+            The model and textures are stylised with low poly geometry and painterly textures, which also allowed for a greater range of assets to be created in a shorter period of time.
+        </Note>
+    </section>
+
+    <section class="p-wrap chapter">
+        <div class="mosaic mosaic--land">
+            <div class="p-cell p-cell--stretch" style="--cell:4/3"><Fig folder="game" src="LAND_s1.jpg" alt={alt} fill sizes={mid} /></div>
+            <div class="p-stack">
+                <div class="p-cell" style="--cell:16/9"><Fig folder="game" src="LAND_w1.jpg" alt={alt} fill sizes={big} /></div>
+                <div class="p-cell" style="--cell:16/9"><Fig folder="game" src="LAND_w2.jpg" alt={alt} fill sizes={big} /></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="p-wrap chapter">
+        <div class="mosaic mosaic--four">
+            <div class="p-cell"><Fig folder="game" src="YARD_s1.jpg" alt={alt} fill sizes={small} /></div>
+            <div class="p-cell"><Fig folder="game" src="YARD_s2.jpg" alt={alt} fill sizes={small} /></div>
+            <div class="p-cell"><Fig folder="game" src="YARD_s3.jpg" alt={alt} fill sizes={small} /></div>
+            <div class="p-cell"><Fig folder="game" src="YARD_s4.jpg" alt={alt} fill sizes={small} /></div>
+        </div>
+        <div class="mosaic mosaic--two">
+            <div class="p-cell" style="--cell:16/9"><Fig folder="game" src="YARD_w2.jpg" alt={alt} fill sizes={mid} /></div>
+            <div class="p-cell" style="--cell:16/9"><Fig folder="game" src="YARD_w3.jpg" alt={alt} fill sizes={mid} /></div>
+        </div>
+        <Note>
+            Exploration is also mechanically driven as it requires players to search the environment for a keycard that unlock the main blast door at the end.
+        </Note>
+    </section>
+
+    <section class="p-wrap overview">
+        <Fig folder="game" src="OVERVIEW.jpg" alt="Aerial overview of the game site" ratio="16/9" sizes="(min-width: 1440px) 1330px, 94vw" widths={[960, 1440, 1920]} />
+    </section>
+
+    <section class="door">
+        <a class="door-art" href={playUrl} aria-label="Play Oliver Makeham's 3D environment game">
+            <Image src={asset('jpg_game', 'door.png')} alt="" width={544} height={544} format="webp" loading="lazy" decoding="async" />
         </a>
-    </main>
-</Layout>
+    </section>
+</ProjectShell>
 
 <style>
-    :global(body) {
-        background: #fff;
-        color: #121411;
-        font-family: Arial, Helvetica, sans-serif;
+    :global(.game) {
+        background: radial-gradient(120% 60% at 50% 0%, #10283a 0%, transparent 70%), var(--bg);
     }
 
-    .game-page {
-        box-sizing: border-box;
-        max-width: 1360px;
-        margin: 0 auto;
-        padding: clamp(4.5rem, 8vw, 7rem) clamp(1rem, 4vw, 3.5rem) clamp(2.5rem, 5vw, 5rem);
+    /* Solid box so the hero image running behind it never shows through */
+    :global(.game .p-intro) {
+        background:
+            linear-gradient(color-mix(in srgb, var(--accent) 10%, transparent), color-mix(in srgb, var(--accent) 10%, transparent)),
+            var(--bg);
     }
 
-    .intro {
+    .hero {
+        position: relative;
+        min-height: 80svh;
         display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin: 0 auto clamp(2rem, 5vw, 4rem);
-        max-width: 1120px;
+        align-items: flex-end;
     }
 
-    .project-copy {
-        max-width: 720px;
-        margin: 0 auto clamp(2rem, 4vw, 3.5rem);
-        font-size: clamp(1rem, 1.2vw, 1.2rem);
-        line-height: 1.7;
+    .hero-img {
+        position: absolute;
+        inset: 0 0 -9rem;
+        -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 62%, transparent 100%);
+        mask-image: linear-gradient(180deg, #000 0%, #000 62%, transparent 100%);
+    }
+    .chapter {
+        position: relative;
+        display: grid;
+        gap: var(--gap);
+        padding-block: clamp(2rem, 5vw, 4rem);
     }
 
-    .project-copy p + p {
-        margin-top: 1.25rem;
-    }
-
-    h1 {
+    .mosaic {
+        display: grid;
+        gap: var(--gap);
         min-width: 0;
-        margin: 0;
-        font-size: clamp(2.75rem, 8vw, 6.5rem);
-        font-weight: 600;
-        letter-spacing: -0.06em;
-        line-height: 0.98;
     }
 
+    .mosaic--two {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mosaic--three {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .mosaic--four {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .mosaic--blue {
+        grid-template-columns: 8fr 3fr;
+    }
+
+    .mosaic--house {
+        grid-template-columns: 4fr 3fr;
+    }
+
+    .mosaic--land {
+        grid-template-columns: 2fr 3fr;
+    }
     .overview {
-        max-width: 1120px;
-        margin: 0 auto;
-        overflow: hidden;
-        background: #f4f1ea;
+        display: grid;
+        gap: 0.8rem;
+        padding-block: clamp(2rem, 5vw, 4rem);
+    }
+    .hero .p-title { text-shadow: 0 4px 34px rgba(0, 0, 0, 0.55); }
+
+    :global(.game::after) { background: #000; }
+
+    .door {
+        display: grid;
+        justify-items: center;
+        align-items: end;
+        min-height: clamp(26rem, 60vw, 44rem);
+        padding: clamp(6rem, 14vw, 12rem) 0 0;
+        background: linear-gradient(180deg, transparent 0%, #000 70%);
     }
 
-    .overview--final {
-        margin-top: 1rem;
-    }
-
-    .overview img {
-        display: block;
-        width: 100%;
-        max-height: min(72svh, 52rem);
-        aspect-ratio: 16 / 10;
-        object-fit: contain;
-    }
-
-    .door-link {
+    .door-art {
         position: relative;
-        display: block;
-        width: min(100%, 34rem);
-        aspect-ratio: 1;
-        margin: 2rem auto 0;
-        overflow: hidden;
+        isolation: isolate;
+        width: min(26rem, 70vw);
     }
 
-    .door-link img {
-        position: relative;
-        z-index: 1;
-        display: block;
-        width: 100%;
-        height: 100%;
-    }
-
-    .door-window {
-        position: absolute;
-        top: 30.3%;
-        left: 29.6%;
-        width: 40.7%;
-        height: 12.3%;
-        background: #000;
-        transition: box-shadow 300ms ease;
-    }
-
-    .door-window::after {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(
-            ellipse at center,
-            rgb(255 172 82 / 95%) 0%,
-            rgb(255 113 0 / 78%) 42%,
-            rgb(255 85 0 / 30%) 76%,
-            transparent 100%
-        );
+    .door-art::before {
         content: '';
+        position: absolute;
+        z-index: -1;
+        left: 29%;
+        top: 29.5%;
+        width: 42%;
+        height: 13.5%;
+        background: linear-gradient(180deg, #ffd9a0, #ff9f4a);
+        box-shadow: 0 0 60px 16px rgba(255, 169, 77, 0.35);
         opacity: 0;
-        transition: opacity 300ms ease;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
     }
 
-    .door-link:hover .door-window,
-    .door-link:focus-visible .door-window {
-        box-shadow: 0 0 0.75rem 0.25rem rgb(255 113 0 / 55%);
+    .door-art:hover::before,
+    .door-art:focus-visible::before {
+        opacity: 0.85;
     }
 
-    .door-link:hover .door-window::after,
-    .door-link:focus-visible .door-window::after {
-        opacity: 1;
-    }
-
-    .door-link:focus-visible {
-        outline: 3px solid #ff7100;
-        outline-offset: 3px;
-    }
-
-    .groups {
-        display: grid;
-        gap: clamp(1.5rem, 3vw, 2.75rem);
-        max-width: 1120px;
-        margin: clamp(1.5rem, 3vw, 2.5rem) auto;
-    }
-
-    .gallery {
-        display: grid;
-        gap: 0.25rem;
-    }
-
-    .gallery-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-        align-items: stretch;
-        gap: clamp(0.5rem, 1.2vw, 1rem);
-    }
-
-    .tile {
-        min-width: 0;
-        margin: 0;
-        overflow: hidden;
-        aspect-ratio: 4 / 3;
-        background: #f4f1ea;
-    }
-
-    .tile img {
+    .door-art :global(img) {
         display: block;
         width: 100%;
-        height: 100%;
-        max-height: min(68svh, 48rem);
-        object-fit: contain;
-        transition: transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 300ms ease;
+        height: auto;
     }
 
-    .tile:hover img {
-        transform: scale(1.035);
-    }
-
-    @media (max-width: 760px) {
-        .game-page {
-            padding: 4rem 1rem 3rem;
+    @media (max-width: 899px) {
+        .mosaic--blue,
+        .mosaic--house,
+        .mosaic--land,
+        .mosaic--two {
+            grid-template-columns: 1fr;
         }
 
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .tile img {
-            transition: none;
+        .mosaic--three {
+            grid-template-columns: repeat(2, 1fr);
         }
 
-        .door-window {
-            transition: none;
+        .mosaic--three > :first-child {
+            grid-column: 1 / -1;
         }
 
-        .door-window::after {
-            transition: none;
+        .mosaic--four {
+            grid-template-columns: repeat(2, 1fr);
         }
     }
 </style>

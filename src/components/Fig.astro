@@ -1,0 +1,129 @@
+---
+import { Picture } from 'astro:assets';
+import { asset } from '../lib/images';
+
+interface Props {
+    folder: string;
+    src: string;
+    alt: string;
+    ratio?: string;
+    fit?: 'cover' | 'contain';
+    pos?: string;
+    sizes?: string;
+    widths?: number[];
+    eager?: boolean;
+    fill?: boolean;
+    zoom?: boolean | string;
+    bg?: string;
+    radius?: string;
+    class?: string;
+}
+
+const {
+    folder,
+    src,
+    alt,
+    ratio,
+    fit = 'cover',
+    pos = '50% 50%',
+    sizes = '(min-width: 1200px) 50vw, 100vw',
+    widths = [640, 1280, 1920],
+    eager = false,
+    fill = false,
+    zoom = true,
+    bg,
+    radius,
+    class: className,
+} = Astro.props;
+
+const image = asset(`jpg_${folder}`, src);
+const group = zoom === true ? folder : zoom || undefined;
+// Images are never faded in on scroll; they should already be there
+const style = [
+    ratio && `--ratio:${ratio}`,
+    `--fit:${fit}`,
+    `--pos:${pos}`,
+    bg && `--fig-bg:${bg}`,
+    radius && `--r:${radius}`,
+]
+    .filter(Boolean)
+    .join(';');
+---
+
+<figure
+    class:list={['fig', ratio && 'fig--ratio', fill && 'fig--fill', zoom && 'fig--zoom', className]}
+    style={style}
+    data-zoom={group}
+>
+    <Picture
+        src={image}
+        alt={alt}
+        formats={['avif']}
+        fallbackFormat="webp"
+        widths={widths}
+        sizes={sizes}
+        quality={72}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        fetchpriority={eager ? 'high' : undefined}
+        onload="this.classList.add('is-in')"
+        onerror="this.classList.add('is-in')"
+    />
+</figure>
+
+<style>
+    .fig {
+        position: relative;
+        margin: 0;
+        overflow: hidden;
+        border-radius: var(--r, 10px);
+        background: var(--fig-bg, rgba(127, 127, 127, 0.14));
+        transition: box-shadow 0.4s ease;
+    }
+
+    .fig--zoom {
+        cursor: zoom-in;
+    }
+
+    .fig--ratio {
+        aspect-ratio: var(--ratio);
+    }
+
+    .fig--fill {
+        position: absolute;
+        inset: 0;
+        min-height: 0;
+    }
+
+    .fig :global(picture) {
+        display: contents;
+    }
+
+    .fig :global(img) {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+    .fig--ratio :global(img),
+    .fig--fill :global(img) {
+        height: 100%;
+        object-fit: var(--fit);
+        object-position: var(--pos);
+    }
+
+    /* Fade each image in once it has loaded instead of letting it snap in */
+    :global(html.js:not(.no-motion) .fig img:not(.is-in)) {
+        opacity: 0;
+    }
+
+    .fig :global(img) {
+        transition: opacity 0.5s ease;
+    }
+
+    .fig:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 3px;
+    }
+
+</style>

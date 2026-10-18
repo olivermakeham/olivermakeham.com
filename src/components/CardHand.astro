@@ -1,0 +1,537 @@
+---
+import { Image } from 'astro:assets';
+import motionMachine from '../assets/home/motionMachine.png';
+import motionReel1 from '../assets/home/reel1.png';
+import motionReel2 from '../assets/home/reel2.png';
+
+interface Props {
+    current: string;
+}
+
+const { current } = Astro.props;
+
+type HandCard =
+    | { href: string; label: string; id: string }
+    | { href: string; label: string; text: { title: string; sub: string; tone: string } };
+
+const cards: HandCard[] = [
+    { href: '/', label: 'Home', id: 'home' },
+    { href: '/game', label: 'Interactive Realtime Environment', id: 'game' },
+    { href: '/swaplings', label: 'Swaplings', id: 'swaplings' },
+    { href: '/maps', label: 'Tactile Maps', id: 'maps' },
+    { href: '/animation', label: 'Short Animation', id: 'animation' },
+    { href: '/presents', label: 'Presents for Friends', id: 'presents' },
+    { href: '/callan', label: 'Graphic Wayfinding Concept', id: 'callan' },
+    { href: '/graphics', label: 'Graphic Exhibition Concept', id: 'graphics' },
+    { href: '/bar', label: 'Bar Scene', id: 'bar' },
+    { href: '/assortments', label: 'Assortments', id: 'assortments' },
+    { href: '/about', label: 'Info', id: 'info' },
+];
+
+const images = import.meta.glob<{ default: ImageMetadata }>('../assets/hand/*.webp', { eager: true });
+const visible = cards.filter((card) => card.href !== current);
+// The motion toggle is a placeholder card after the last page
+const total = visible.length + 1;
+const middle = (total - 1) / 2;
+---
+
+<nav class="hand" aria-label="Pages" style={`--n:${total}`}>
+    {visible.map((card, index) => (
+        <a
+            class:list={['hcard', 'text' in card && `hcard--${card.text.tone}`]}
+            href={card.href}
+            aria-label={card.label}
+            style={`--t:${index - middle};--i:${index}`}
+        >
+            {'id' in card ? (
+                <Image
+                    src={images[`../assets/hand/${card.id}.webp`].default}
+                    alt=""
+                    width={300}
+                    height={420}
+                    loading="eager"
+                    fetchpriority="low"
+                    decoding="async"
+                    draggable="false"
+                />
+            ) : (
+                <>
+                    <span class="hcard-title">{card.text.title}</span>
+                    {card.text.sub && <span class="hcard-sub">{card.text.sub}</span>}
+                </>
+            )}
+        </a>
+    ))}
+    <button
+        class="hcard hcard--motion"
+        type="button"
+        data-motion-toggle
+        aria-label="Disable motion"
+        style={`--t:${visible.length - middle};--i:${visible.length}`}
+    >
+        <span class="hmotion">
+            <Image class="hmotion-machine" src={motionMachine} width={360} alt="" loading="eager" fetchpriority="low" decoding="async" draggable="false" />
+            <Image class="hmotion-reel hmotion-reel--1" src={motionReel1} width={200} alt="" loading="eager" fetchpriority="low" decoding="async" draggable="false" />
+            <Image class="hmotion-reel hmotion-reel--2" src={motionReel2} width={200} alt="" loading="eager" fetchpriority="low" decoding="async" draggable="false" />
+        </span>
+    </button>
+</nav>
+
+<style>
+    .hand {
+        --w: clamp(7.4rem, 11vw, 10.4rem);
+        --h: calc(var(--w) * 1.4);
+        --step: min(calc(var(--w) * 0.62), calc((100vw - 2rem - var(--w)) / (var(--n) - 1)));
+        --ang: 1.7deg;
+        --sag: calc(var(--step) * 0.0165);
+        --drop: 1.3rem;
+        --rest: calc(var(--h) - var(--peek) + var(--drop));
+        --peek: 5.2rem;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 900;
+        height: var(--h);
+        pointer-events: none;
+        contain: layout;
+    }
+
+    .hcard {
+        --lift: 0rem;
+        --scale: 1;
+        position: absolute;
+        left: calc(50% - var(--w) / 2);
+        bottom: 0;
+        z-index: calc(var(--t) + 20);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        width: var(--w);
+        height: var(--h);
+        padding: 0.6rem;
+        box-sizing: border-box;
+        overflow: hidden;
+        border-radius: 0.65rem;
+        color: #121411;
+        background: #f2f2f0;
+        text-align: center;
+        text-decoration: none;
+        pointer-events: auto;
+        box-shadow: 0 0 0 1px rgb(0 0 0 / 8%), 0 6px 16px rgb(0 0 0 / 22%);
+        transform-origin: 50% 100%;
+        --rx: 0deg;
+        --ry: 0deg;
+        transform: translate3d(calc((var(--t) + var(--sx, 0)) * var(--step)), calc(var(--rest) + var(--t) * var(--t) * var(--sag) - var(--lift)), 0)
+            rotate(calc(var(--t) * var(--ang))) scale(var(--scale)) perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+        transition: transform var(--td, 0.08s) var(--ease, ease-out), box-shadow var(--td, 0.08s) ease-out;
+        animation: hand-in 0.42s cubic-bezier(0.2, 0.9, 0.3, 1) backwards;
+        animation-delay: calc(0.05s + var(--i) * 0.03s);
+        backface-visibility: hidden;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Motion machine: not a card, so it has no card background, border, radius or shadow. Filters sit on the
+       images (not the transformed parent) and the reels only spin while the hand is open. */
+    .hand .hcard.hcard--motion {
+        --mf: drop-shadow(0 4px 7px rgb(0 0 0 / 35%));
+        display: block;
+        z-index: 1;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        overflow: visible;
+        background: none;
+        outline: none;
+        box-shadow: none;
+        cursor: pointer;
+        transition: transform var(--td, 0.08s) var(--ease, ease-out);
+    }
+
+    :global(html.no-motion) .hand .hcard.hcard--motion {
+        --mf: grayscale(1) brightness(0.8) drop-shadow(0 4px 7px rgb(0 0 0 / 35%));
+    }
+
+    .hand .hcard.hcard--motion.is-hot,
+    .hand .hcard.hcard--motion:focus-visible {
+        --mf: drop-shadow(0 12px 14px rgb(0 0 0 / 55%));
+        box-shadow: none;
+    }
+
+    :global(html.no-motion) .hand .hcard.hcard--motion.is-hot,
+    :global(html.no-motion) .hand .hcard.hcard--motion:focus-visible {
+        --mf: grayscale(1) brightness(0.8) drop-shadow(0 12px 14px rgb(0 0 0 / 55%));
+    }
+
+    /* Square art scaled so the machine is as tall as the cards, centred on its slot */
+    .hmotion {
+        position: absolute;
+        top: 0;
+        left: -9%;
+        width: 132%;
+        aspect-ratio: 1;
+        pointer-events: none;
+    }
+    .hmotion :global(img) {
+        position: absolute;
+        display: block;
+        max-width: none;
+        filter: var(--mf);
+    }
+
+    .hmotion :global(.hmotion-machine) {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .hmotion :global(.hmotion-reel) {
+        left: -4.9%;
+        width: 53.2%;
+        height: 53.2%;
+        animation: hmotion-spin 4.8s linear infinite paused;
+    }
+
+    .hmotion :global(.hmotion-reel--1) {
+        top: 2.2%;
+    }
+
+    .hmotion :global(.hmotion-reel--2) {
+        top: 57%;
+    }
+
+    .hand.spin .hmotion :global(.hmotion-reel),
+    .hand:hover .hmotion :global(.hmotion-reel),
+    .hand:has(:focus-visible) .hmotion :global(.hmotion-reel),
+    .hand.open .hmotion :global(.hmotion-reel) {
+        animation-play-state: running;
+    }
+
+    @keyframes hmotion-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .hcard-title {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    .hcard-sub {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        opacity: 0.85;
+    }
+
+    .hcard :global(img) {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+        -webkit-user-drag: none;
+    }
+
+    /* The hand rises with pointer proximity (--prox, set by script) and fully on hover/focus */
+    .hand {
+        --prox: 0;
+        --hl: calc((var(--peek) * 0.95 + var(--drop) + 3.05rem) * var(--prox));
+    }
+
+    .hand:hover,
+    .hand:has(:focus-visible) {
+        --hl: calc(var(--peek) * 0.95 + var(--drop) + 3.05rem);
+    }
+
+    .hcard {
+        --lift: var(--hl);
+    }
+
+    .hand .hcard.is-hot,
+    .hand .hcard:focus-visible {
+        --lift: calc(var(--hl) + var(--h) * 0.3);
+        --scale: 1.06;
+        z-index: 60;
+        outline: none;
+        box-shadow: 0 0 0 1px rgb(0 0 0 / 10%), 0 16px 30px rgb(0 0 0 / 55%);
+    }
+
+    /* Snappy: hover and release use the same very short transition */
+    .hand .hcard.fall {
+        --td: 0.08s;
+        --ease: ease-out;
+    }
+
+    .hand.falling .hcard {
+        --td: 0.2s;
+        --ease: ease-out;
+    }
+
+    .hand .hcard.is-hot,
+    .hand .hcard:focus-visible {
+        --td: 0.1s;
+        --ease: cubic-bezier(0.3, 1.12, 0.6, 1);
+    }
+
+    /* Right after the pointer enters, let the hand rise first; the hovered card lifts once it settles */
+    .hand.settling .hcard.is-hot,
+    .hand.settling .hcard:focus-visible {
+        --lift: var(--hl);
+        --scale: 1;
+        --td: 0.08s;
+        --ease: ease-out;
+    }
+
+    /* The first lift after settling eases in more gently */
+    .hand.lifting .hcard.is-hot,
+    .hand.lifting .hcard:focus-visible {
+        --td: 0.2s;
+        --ease: cubic-bezier(0.25, 0.8, 0.35, 1);
+    }
+
+    /* Touch: a flat, scrollable tray instead of the arc. First tap opens it, second tap picks a card */
+    @media (hover: none) {
+        .hand {
+            --w: 6rem;
+            --mh: calc(5.4rem + env(safe-area-inset-bottom));
+            display: flex;
+            align-items: flex-start;
+            gap: 0.55rem;
+            height: var(--mh);
+            padding: 0.5rem 0.75rem 0;
+            box-sizing: border-box;
+            overflow-x: auto;
+            overflow-y: hidden;
+            overscroll-behavior-x: contain;
+            scroll-snap-type: x proximity;
+            scrollbar-width: none;
+            contain: none;
+            pointer-events: auto;
+            transition: height 0.18s ease-out, background-color 0.18s ease-out;
+        }
+
+        .hand::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hand.open {
+            height: calc(var(--h) + 1.25rem + env(safe-area-inset-bottom));
+            background: rgb(0 0 0 / 55%);
+            backdrop-filter: blur(6px);
+        }
+
+        .hand .hcard,
+        .hand .hcard:hover,
+        .hand .hcard:focus-visible {
+            position: relative;
+            left: auto;
+            bottom: auto;
+            flex: none;
+            z-index: auto;
+            transform: none;
+            transition: none;
+            scroll-snap-align: center;
+            box-shadow: 0 0 0 1px rgb(0 0 0 / 8%), 0 4px 10px rgb(0 0 0 / 25%);
+        }
+
+        :global(html body.has-hand.has-hand) {
+            --hand-h: calc(5.4rem + env(safe-area-inset-bottom));
+        }
+    }
+
+    @media (max-width: 560px) {
+        .hand {
+            --w: 6.2rem;
+            --ang: 1.9deg;
+        }
+
+        .hcard-title {
+            font-size: 1.05rem;
+        }
+    }
+
+    /* Once the entrance has played, drop it so re-enabling motion can never replay it */
+    .hand.ready .hcard {
+        animation: none;
+    }
+
+    @keyframes hand-in {
+        from {
+            translate: 0 calc(var(--h) * 0.7);
+            opacity: 0;
+        }
+    }
+</style>
+
+<script>
+    // Proximity raise: the hand starts rising as the pointer approaches from above
+    const hand = document.querySelector<HTMLElement>('.hand');
+    if (hand && matchMedia('(hover: hover)').matches) {
+        // Approach: the hand rises as the pointer comes within REACH px
+        const REACH = 70;
+        // Once engaged it stays fully up; when the pointer leaves by more than EXIT_PAD px the fall starts and runs to completion
+        const EXIT_PAD = 110;
+        let left = 0;
+        let right = 0;
+        let top = 0;
+        let pending = false;
+        let x = -1;
+        let y = -1;
+        let last = -1;
+        let fallTimer = 0;
+        let settleTimer = 0;
+        const disengage = () => {
+            if (!hand.classList.contains('engaged')) return;
+            hand.classList.remove('engaged');
+            hand.classList.add('falling');
+            clearTimeout(fallTimer);
+            fallTimer = window.setTimeout(() => hand.classList.remove('falling'), 350);
+        };
+
+        const measure = () => {
+            const cards = hand.children;
+            const first = cards[0].getBoundingClientRect();
+            const end = cards[cards.length - 1].getBoundingClientRect();
+            left = first.left;
+            right = end.right;
+            top = innerHeight - (parseFloat(getComputedStyle(hand).getPropertyValue('--peek')) || 1) * 16 * 0.6;
+        };
+
+        const apply = () => {
+            pending = false;
+            pickCard();
+            tilt();
+            const dy = Math.max(0, top - y);
+            const dx = Math.max(0, left - x, x - right);
+            const dist = Math.hypot(dx, dy);
+            const engaged = hand.classList.contains('engaged');
+            if (engaged && (y < 0 || dist > EXIT_PAD)) disengage();
+            const p = y < 0 || (!engaged && dist >= REACH) ? 0 : engaged && dist <= EXIT_PAD ? 1 : Math.max(0, 1 - dist / REACH);
+            const eased = Math.round(p * p * (3 - 2 * p) * 50) / 50;
+            if (eased !== last) {
+                last = eased;
+                hand.style.setProperty('--prox', String(eased));
+                // Reels spin whenever the hand is visibly raised, however it got there
+                hand.classList.toggle('spin', eased > 0);
+            }
+        };
+
+        // Toggling motion mid-hover: clear transient state so nothing is left half-applied
+        document.addEventListener('motionchange', () => {
+            hand.classList.remove('settling', 'lifting', 'falling');
+            active?.style.removeProperty('--rx');
+            active?.style.removeProperty('--ry');
+            tiltKey = '';
+            last = -1;
+            apply();
+        });
+        // The entrance animation is dropped once it has played, so re-enabling motion can't replay it
+        window.setTimeout(() => hand.classList.add('ready'), 1400);
+
+        addEventListener(
+            'pointermove',
+            (event) => {
+                x = event.clientX;
+                y = event.clientY;
+                if (!pending) {
+                    pending = true;
+                    requestAnimationFrame(apply);
+                }
+            },
+            { passive: true },
+        );
+        document.documentElement.addEventListener('pointerleave', () => {
+            y = -1;
+            apply();
+        });
+        addEventListener('blur', () => {
+            y = -1;
+            apply();
+        });
+        addEventListener('resize', measure, { passive: true });
+        measure();
+        // The hovered card is chosen here rather than by :hover. A lifted card slides out from under
+        // a pointer at the bottom or side edge, which made neighbouring cards fight over the hover.
+        // So the active card stays active while the pointer is still on it, below it, or just beside it.
+        const PAD = 14;
+        let active: HTMLElement | null = null;
+        let tiltKey = '';
+        // A subtle version of the home cards' pointer tilt, only on the hovered card
+        const tilt = () => {
+            if (!active || hand.classList.contains('settling') || document.documentElement.classList.contains('no-motion')) return;
+            const r = active.getBoundingClientRect();
+            const u = Math.min(0.5, Math.max(-0.5, (x - r.left) / r.width - 0.5));
+            const v = Math.min(0.5, Math.max(-0.5, (y - r.top) / r.height - 0.5));
+            const rx = (-v * 7).toFixed(1);
+            const ry = (u * 7).toFixed(1);
+            const key = rx + ry;
+            if (key === tiltKey) return;
+            tiltKey = key;
+            active.style.setProperty('--rx', rx + 'deg');
+            active.style.setProperty('--ry', ry + 'deg');
+        };
+        const setActive = (next: HTMLElement | null) => {
+            if (next === active) return;
+            if (active) {
+                const old = active;
+                old.style.removeProperty('--rx');
+                old.style.removeProperty('--ry');
+                tiltKey = '';
+                old.classList.remove('is-hot');
+                old.classList.add('fall');
+                window.setTimeout(() => old.classList.remove('fall'), 150);
+            }
+            active = next;
+            active?.classList.add('is-hot');
+        };
+        const pickCard = () => {
+            if (y < 0) return setActive(null);
+            const hit = document.elementFromPoint(x, y)?.closest<HTMLElement>('.hcard') ?? null;
+            if (active && hit !== active) {
+                const r = active.getBoundingClientRect();
+                const sideways = x >= r.left - PAD && x <= r.right + PAD;
+                const below = y > r.bottom;
+                const near = y >= r.top - PAD && y <= r.bottom + PAD;
+                if (sideways && (below || (!hit && near))) return;
+            }
+            setActive(hit && hand.contains(hit) ? hit : null);
+        };
+        hand.addEventListener('pointerenter', (event) => {
+            if (event.pointerType !== 'mouse') return;
+            clearTimeout(fallTimer);
+            hand.classList.remove('falling');
+            hand.classList.add('engaged');
+            hand.classList.add('settling');
+            clearTimeout(settleTimer);
+            settleTimer = window.setTimeout(() => {
+                hand.classList.remove('settling');
+                hand.classList.add('lifting');
+                window.setTimeout(() => hand.classList.remove('lifting'), 300);
+            }, 110);
+        });
+    } else if (hand) {
+        // Touch: first tap opens the tray; tapping outside it closes it
+        const setOpen = (open: boolean) => hand.classList.toggle('open', open);
+        hand.addEventListener('click', (event) => {
+            if (!(event.target as HTMLElement).closest('.hcard')) return;
+            if (!hand.classList.contains('open')) {
+                event.preventDefault();
+                setOpen(true);
+            }
+        });
+        document.addEventListener('pointerdown', (event) => {
+            if (!hand.contains(event.target as Node)) setOpen(false);
+        });
+        addEventListener('scroll', () => setOpen(false), { passive: true });
+    }
+</script>
