@@ -317,8 +317,6 @@ const middle = (total - 1) / 2;
             scrollbar-width: none;
             contain: none;
             pointer-events: auto;
-            background: rgb(0 0 0 / 55%);
-            backdrop-filter: blur(6px);
         }
 
         .hand::-webkit-scrollbar {
@@ -349,6 +347,10 @@ const middle = (total - 1) / 2;
     }
 
     @media (max-width: 560px) {
+        .hand .hcard--motion {
+            display: none;
+        }
+
         .hcard-title {
             font-size: 1.05rem;
         }
