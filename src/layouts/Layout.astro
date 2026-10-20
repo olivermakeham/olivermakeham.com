@@ -48,6 +48,17 @@ const themeStyle = bg ? `background:${bg};--ink:${ink ?? '#121411'};--page-bg:${
 		transition: none !important;
 		scroll-behavior: auto !important;
 	}
+
+	/* Touch devices never animate */
+	@media (hover: none) {
+		*,
+		*::before,
+		*::after {
+			animation: none !important;
+			transition: none !important;
+			scroll-behavior: auto !important;
+		}
+	}
 </style>
 
 <style>

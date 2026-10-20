@@ -695,6 +695,34 @@ const robotSheet = asset('jpg_assortments', 'headSheet.png');
         --bar-reveal: 0;
     }
 
+    /* Touch: plain static cards, so one tap always opens the page (no sticky hover reveals) */
+    @media (hover: none) {
+        .cover--motion {
+            display: none;
+        }
+
+        .cover--bar:hover .bar-cover-full,
+        .cover--game:hover .bar-cover-full,
+        .cover--bar:focus-visible .bar-cover-full,
+        .cover--game:focus-visible .bar-cover-full,
+        .cover--fade:hover .cover-fade,
+        .cover--fade:focus-visible .cover-fade,
+        .cover--presents:hover .presents-cover-stage,
+        .cover--presents:focus-visible .presents-cover-stage {
+            opacity: 0;
+            --bar-reveal: 0;
+        }
+
+        .cover:hover .cover-shadow::after,
+        .cover.is-popping .cover-shadow::after {
+            opacity: 0;
+        }
+
+        .cover:focus-visible .cover-tilt {
+            transform: none;
+        }
+    }
+
     .exhibition-stack {
         perspective: 900px;
         transform-style: preserve-3d;
