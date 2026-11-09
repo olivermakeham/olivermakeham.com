@@ -32,6 +32,19 @@ const clamp = (value: number, min: number, max: number) => Math.min(max, Math.ma
 const root = document.documentElement;
 let noMotion = root.classList.contains('no-motion');
 
+const prioritizeVisibleImages = () => {
+    const viewportWidth = root.clientWidth;
+    const viewportHeight = root.clientHeight;
+    document.querySelectorAll<HTMLImageElement>('.home-page img[loading="lazy"]').forEach((image) => {
+        const rect = image.getBoundingClientRect();
+        if (rect.bottom > 0 && rect.top < viewportHeight && rect.right > 0 && rect.left < viewportWidth) {
+            image.loading = 'eager';
+        }
+    });
+};
+
+prioritizeVisibleImages();
+
 const covers = Array.from(document.querySelectorAll<HTMLElement>('.cover:not(.cover--static)'));
 const handlers: Handler[] = [];
 const rects = new Map<HTMLElement, DOMRect>();
@@ -95,6 +108,7 @@ function tick(now: number) {
 
 const markDirty = () => {
     rectsDirty = true;
+    prioritizeVisibleImages();
     if (pointer) schedule();
 };
 
