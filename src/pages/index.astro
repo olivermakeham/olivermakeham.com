@@ -21,6 +21,7 @@ const graphicsLayers = [
 
 const tiles = [
     { href: '/', label: 'Oliver Makeham', kind: 'photo', file: 'home_card.webp' },
+    { href: '/vfx', label: 'VFX', kind: 'vfx' },
     { href: '/game', label: 'Interactive Realtime Environment', kind: 'bar' },
     { href: '/swaplings', label: 'Swaplings', kind: 'card', subjectBounds: '0.2492,0.0635,0.5053,0.8913' },
     { href: '/maps', label: 'Maps', kind: 'maps' },
@@ -81,6 +82,17 @@ const robotSheet = asset('jpg_assortments', 'headSheet.png');
                     <span class="cover-tilt">
                     <span class="cover-shadow"></span>
                     <span class="cover-frame">
+                    {tile.kind === 'vfx' && (
+                        <span class="vfx-cover" aria-hidden="true">
+                            <Image class="cover-image" src={asset('jpg_vfx', 'title-green.webp')} alt="" loading={loading} {...card} />
+                            <span class="vfx-composite">
+                                <Image class="cover-image" src={asset('jpg_vfx', 'title.webp')} alt="" loading={loading} {...card} />
+                            </span>
+                            <span class="vfx-rest">
+                                <Image class="cover-image" src={asset('jpg_vfx', 'title.webp')} alt="" loading={loading} {...card} />
+                            </span>
+                        </span>
+                    )}
                     {tile.kind === 'photo' && (
                         <Image class="cover-image" src={photos[tile.file]} alt="" loading={loading} {...card} />
                     )}
@@ -422,6 +434,42 @@ const robotSheet = asset('jpg_assortments', 'headSheet.png');
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+
+    .vfx-cover,
+    .vfx-composite,
+    .vfx-rest {
+        position: absolute;
+        inset: 0;
+        display: block;
+    }
+
+    .vfx-cover {
+        overflow: hidden;
+    }
+
+    .vfx-composite {
+        -webkit-mask-image: linear-gradient(to right, #000 calc(var(--vfx-position, 100%) - 10px), transparent calc(var(--vfx-position, 100%) + 10px));
+        mask-image: linear-gradient(to right, #000 calc(var(--vfx-position, 100%) - 10px), transparent calc(var(--vfx-position, 100%) + 10px));
+        pointer-events: none;
+    }
+
+    .vfx-rest {
+        opacity: 1;
+        transition: opacity 180ms ease-out;
+        pointer-events: none;
+    }
+
+    .cover--vfx[data-revealing] .vfx-rest {
+        opacity: 0;
+    }
+
+    :global(html.no-motion) .cover--vfx .vfx-rest {
+        opacity: 1;
+    }
+
+    :global(html.no-motion) .cover--vfx:hover .cover-shadow::after {
+        opacity: 0;
     }
 
     .bar-cover,

@@ -1,0 +1,231 @@
+---
+import ProjectShell from '../components/ProjectShell.astro';
+import Fig from '../components/Fig.astro';
+import Note from '../components/Note.astro';
+
+const wide = '(min-width: 1440px) 1330px, 92vw';
+const half = '(min-width: 1440px) 660px, (min-width: 700px) 46vw, 92vw';
+---
+
+<ProjectShell title="VFX Scene" bg="#190e0d" ink="#f8eeeb" accent="#eb6d57" class="vfx">
+    <section class="hero">
+        <div class="hero-image">
+            <Fig folder="vfx" src="title.webp" alt="A performer in a red, organic environment" fill eager zoom={false} radius="0" sizes="100vw" widths={[960, 1440, 1920]} />
+        </div>
+        <h1 class="p-title p-title--over"><span class="sans">VFX Scene</span><span class="p-date">2026</span></h1>
+    </section>
+
+    <section class="p-wrap intro">
+        <div class="p-intro">
+            <p class="p-intro-lead">I was responsible for the entire VFX production for a scene in a short film where the protagonist imagines a fight within her own brain where she can destroy her opponent with inhuman abilities. This involved the integration of a rendered 3D environment with green screen plate footage, as well as extensive post-production.</p>
+        </div>
+    </section>
+
+    <section class="p-wrap chapter">
+        <Fig folder="vfx" src="scene-00000072-frame-80.webp" alt="Close-up of a performer with windblown hair" sizes={wide} widths={[960, 1440, 1920, 3840]} />
+        <div class="pair">
+            <Fig folder="vfx" src="scene-0000002-frame-66.webp" alt="A performer holding her arm in the organic environment" sizes={half} widths={[640, 1280, 1920, 3840]} />
+            <Fig folder="vfx" src="scene-0000046-frame-61.webp" alt="A performer with folded arms standing in the red environment" sizes={half} widths={[640, 1280, 1920, 3840]} />
+        </div>
+        <div class="pair">
+            <Fig folder="vfx" src="scene-0000003-frame-17.webp" alt="Overhead view of a performer on the ground" sizes={half} widths={[640, 1280, 1920, 3840]} />
+            <Fig folder="vfx" src="scene-0000001-frame-12.webp" alt="Close-up of a performer looking to the side" sizes={half} widths={[640, 1280, 1920, 3840]} />
+        </div>
+        <Fig folder="vfx" src="scene-00000216-frame-122.webp" alt="A performer firing a bright beam across the environment" sizes={wide} widths={[960, 1440, 1920, 3840]} />
+    </section>
+
+    <section class="p-wrap chapter">
+        <header class="chapter-heading">
+            <h2>Plates</h2>
+            <p>As I only had five days to create the entire scene, I utilised neural network models to generate masks that would allow for keying, relighting, camera tracking, depth and more to be achieved incredibly fast. This was also essential as the footage plates were shot on an iPhone SE, and no tracking markers or camera data was provided.</p>
+        </header>
+        <div class="image-group">
+            <Fig folder="vfx" src="final-composite.webp" alt="Final composite of a performer in the red environment" sizes={wide} widths={[960, 1440, 1920]} />
+            <p class="image-label">Final composite</p>
+        </div>
+        <div class="pair">
+            <div class="image-group">
+                <Fig folder="vfx" src="shot-1-plate.webp" alt="Original greenscreen plate of a performer" sizes={half} />
+                <p class="image-label">Original plate</p>
+            </div>
+            <div class="image-group">
+                <Fig folder="vfx" src="tracking.webp" alt="Greenscreen plate overlaid with tracked points and motion trails" sizes={half} />
+                <p class="image-label">CoTracker3 point-track visualization</p>
+            </div>
+        </div>
+        <div class="pair">
+            <div class="image-group">
+                <Fig folder="vfx" src="key-matte.webp" alt="Black and white key matte of the performer" sizes={half} />
+                <p class="image-label">Corridor Key 2.0 / key matte</p>
+            </div>
+            <div class="image-group">
+                <Fig folder="vfx" src="keyed-subject.webp" alt="Keyed performer against a black background" sizes={half} />
+                <p class="image-label">Graded subject</p>
+            </div>
+        </div>
+        <div class="pair">
+            <div class="image-group">
+                <Fig folder="vfx" src="depth.webp" alt="Grayscale relative depth visualization of the performer" sizes={half} />
+                <p class="image-label">Depth Anything 3 / relative inverse depth</p>
+            </div>
+            <div class="image-group">
+                <Fig folder="vfx" src="normals.webp" alt="Colour visualization of the performer's surface normals" sizes={half} />
+                <p class="image-label">MoGe-2 / surface normals</p>
+            </div>
+        </div>
+        <div class="pair">
+            <div class="image-group">
+                <Fig folder="vfx" src="fog.webp" alt="Fog pass showing a performer silhouetted against the hazy environment" sizes={half} />
+                <p class="image-label">Nuke / fog pass</p>
+            </div>
+            <div class="image-group">
+                <Fig folder="vfx" src="tissue-pass.webp" alt="Rendered red tissue particles on a dark background" sizes={half} />
+                <p class="image-label">Blender / tissue particle pass</p>
+            </div>
+        </div>
+        <div class="pair">
+            <div class="image-group">
+                <Fig folder="vfx" src="environment-viewport.webp" alt="Unrendered Blender viewport of the organic environment" sizes={half} />
+                <p class="image-label">Blender / unrendered environment</p>
+            </div>
+            <div class="image-group">
+                <Fig folder="vfx" src="environment.webp" alt="Blender environment pass without the performer" sizes={half} />
+                <p class="image-label">Blender environment pass</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="p-wrap chapter">
+        <header class="chapter-heading">
+            <h2>3D assets</h2>
+            <p>I modelled and textured the brain environment in Blender and created a procedural animation system to replicate a heartbeat in a gross, intimidating way. I also made a procedural particle system for stray tissue floating in the scene for atmosphere and depth.</p>
+        </header>
+        <div class="pair">
+            <div class="image-group">
+                <Fig folder="vfx" src="development-blockout.webp" alt="Grey Blender viewport showing an early environment blockout" sizes={half} />
+            </div>
+            <div class="image-group">
+                <Fig folder="vfx" src="development-sculpt.webp" alt="Grey Blender viewport showing the sculpted organic environment" sizes={half} />
+            </div>
+        </div>
+        <div class="pair">
+            <div class="image-group">
+                <Fig folder="vfx" src="development-lighting.webp" alt="Blender viewport showing the red-lit environment from outside" sizes={half} />
+            </div>
+            <div class="image-group">
+                <Fig folder="vfx" src="development-tissue.webp" alt="Blender viewport showing a close view of the organic environment and tissue particles" sizes={half} />
+            </div>
+        </div>
+        <div class="pair">
+            <div class="image-group">
+                <Fig folder="vfx" src="development-character.webp" alt="Character asset visible in a 3D application" sizes={half} />
+            </div>
+            <div class="image-group">
+                <Fig folder="vfx" src="double-shot.webp" alt="Laser beam impact in the red environment" sizes={half} />
+            </div>
+        </div>
+        <Note>I created a simple 3D double of the antagonist that would be used for a few frames to enhance the laser beam impact.</Note>
+    </section>
+
+    <section class="p-wrap chapter">
+        <header class="chapter-heading">
+            <h2>Compositing</h2>
+            <p>Everything was combined into Nuke for compositing. This involved grading, plate integration, fog dynamics, effects and more.</p>
+        </header>
+        <div class="image-group">
+            <Fig folder="vfx" src="nuke-comp-wide.webp" alt="Nuke compositing workspace showing a performer in the scene" sizes={wide} widths={[960, 1440, 1920]} />
+        </div>
+        <div class="image-group">
+            <Fig folder="vfx" src="nuke-overview.webp" alt="Nuke compositing workspace showing a performer and the node graph" sizes={wide} widths={[960, 1440, 1920]} />
+        </div>
+    </section>
+
+    <section class="p-wrap chapter">
+        <header class="chapter-heading">
+            <h2>Final scene</h2>
+        </header>
+        <video controls playsinline preload="none" poster="/video/vfx-poster.webp" width="3840" height="2160" aria-label="Completed VFX scene">
+            <source src="/video/vfx-scene.mp4" type="video/mp4" />
+        </video>
+        <Note>NOTE: This video has no audio, yet.</Note>
+    </section>
+</ProjectShell>
+
+<style>
+    .hero {
+        position: relative;
+        display: flex;
+        min-height: 75svh;
+        align-items: flex-end;
+    }
+
+    .hero-image {
+        position: absolute;
+        inset: 0 0 -7rem;
+        -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 60%, transparent 100%);
+        mask-image: linear-gradient(180deg, #000 0%, #000 60%, transparent 100%);
+    }
+
+    .intro,
+    .chapter {
+        position: relative;
+    }
+
+    :global(.vfx .p-intro) {
+        background: #2e1815;
+    }
+
+    .chapter {
+        display: grid;
+        gap: var(--gap);
+        padding-block: clamp(2.5rem, 6vw, 5rem);
+    }
+
+    .chapter-heading {
+        max-width: 42rem;
+        padding-bottom: 1rem;
+    }
+
+    .chapter-heading h2 {
+        margin: 0.3rem 0;
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        line-height: 1.1;
+    }
+
+    .chapter-heading > p:last-child {
+        margin: 0.7rem 0 0;
+        opacity: 0.75;
+    }
+
+    .pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--gap);
+    }
+
+    .image-label {
+        margin: 0.5rem 0 0;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        opacity: 0.7;
+    }
+
+    .chapter video {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        border-radius: 18px;
+        background: #000;
+    }
+
+    @media (max-width: 700px) {
+        .hero {
+            min-height: 60svh;
+        }
+
+        .pair {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

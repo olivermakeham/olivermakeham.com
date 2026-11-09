@@ -149,8 +149,9 @@ const initTilt = (cover: HTMLElement) => {
             const localX = (x - left) / width;
             const localY = (y - top) / height;
             if (noMotion) {
-                target.lift = inside ? -7 : 0;
-                target.scale = inside ? 1.035 : 1;
+                const pop = inside && !cover.classList.contains('cover--vfx');
+                target.lift = pop ? -7 : 0;
+                target.scale = pop ? 1.035 : 1;
                 target.rotateX = 0;
                 target.rotateY = 0;
                 return;
@@ -206,6 +207,20 @@ const initTilt = (cover: HTMLElement) => {
                 tilt.style.transform = next;
             }
             return moving;
+        },
+    });
+};
+
+const initVfx = (cover: HTMLElement) => {
+    handlers.push({
+        cover,
+        update(x, _y, rect) {
+            const position = clamp((x - rect.left) / rect.width, 0, 1) * 100;
+            cover.style.setProperty('--vfx-position', `${position}%`);
+            cover.dataset.revealing = '';
+        },
+        leave() {
+            delete cover.dataset.revealing;
         },
     });
 };
@@ -965,6 +980,7 @@ document.querySelectorAll<HTMLElement>('.cover').forEach((cover) => {
 covers.forEach((cover) => {
     initTilt(cover);
     const tiltHandlers = handlers.length;
+    if (cover.classList.contains('cover--vfx')) initVfx(cover);
     if (cover.classList.contains('cover--bar')) initBar(cover);
     if (cover.classList.contains('cover--robot')) initRobot(cover);
     if (cover.classList.contains('cover--presents')) initPresents(cover);

@@ -18,6 +18,7 @@ const HEIGHT = 420;
 
 // Where the portrait crop sits horizontally on each 3:2 cover (0 = left, 1 = right)
 const focus = {
+    vfx: 0.62,
     game: 0.5,
     swaplings: 0.5,
     maps: 0.5,
