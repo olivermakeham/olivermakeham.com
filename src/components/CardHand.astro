@@ -302,6 +302,10 @@ const middle = (total - 1) / 2;
 
     /* Touch: a flat, always-visible tray you scroll sideways; one tap opens a page */
     @media (hover: none) {
+        .hand .hcard.hcard--motion {
+            display: none;
+        }
+
         .hand {
             --w: 4.6rem;
             --mh: calc(var(--h) + 1rem + env(safe-area-inset-bottom));
@@ -348,10 +352,6 @@ const middle = (total - 1) / 2;
     }
 
     @media (max-width: 560px) {
-        .hand .hcard--motion {
-            display: none;
-        }
-
         .hcard-title {
             font-size: 1.05rem;
         }

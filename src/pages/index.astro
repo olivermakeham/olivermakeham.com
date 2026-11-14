@@ -449,8 +449,8 @@ const robotSheet = asset('jpg_assortments', 'headSheet.png');
     }
 
     .vfx-composite {
-        -webkit-mask-image: linear-gradient(to right, #000 calc(var(--vfx-position, 100%) - 10px), transparent calc(var(--vfx-position, 100%) + 10px));
-        mask-image: linear-gradient(to right, #000 calc(var(--vfx-position, 100%) - 10px), transparent calc(var(--vfx-position, 100%) + 10px));
+        -webkit-mask-image: linear-gradient(to right, transparent calc(var(--vfx-position, 100%) - 10px), #000 calc(var(--vfx-position, 100%) + 10px));
+        mask-image: linear-gradient(to right, transparent calc(var(--vfx-position, 100%) - 10px), #000 calc(var(--vfx-position, 100%) + 10px));
         pointer-events: none;
     }
 
@@ -827,11 +827,13 @@ const robotSheet = asset('jpg_assortments', 'headSheet.png');
         }
     }
 
-    @media (max-width: 560px) {
+    @media (hover: none) and (pointer: coarse) {
         .cover--motion {
             display: none;
         }
+    }
 
+    @media (max-width: 560px) {
         .grid {
             width: calc(100% - 2rem);
             grid-template-columns: minmax(0, 1fr);
