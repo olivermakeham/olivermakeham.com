@@ -302,10 +302,6 @@ const middle = (total - 1) / 2;
 
     /* Touch: a flat, always-visible tray you scroll sideways; one tap opens a page */
     @media (hover: none) {
-        .hand .hcard.hcard--motion {
-            display: none;
-        }
-
         .hand {
             --w: 4.6rem;
             --mh: calc(var(--h) + 1rem + env(safe-area-inset-bottom));
@@ -342,12 +338,14 @@ const middle = (total - 1) / 2;
             box-shadow: 0 0 0 1px rgb(0 0 0 / 8%), 0 4px 10px rgb(0 0 0 / 25%);
         }
 
-        .hand .hcard--motion {
-            display: none;
-        }
-
         :global(html body.has-hand.has-hand) {
             --hand-h: calc(6.44rem + 1rem + env(safe-area-inset-bottom));
+        }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+        .hand .hcard.hcard--motion {
+            display: none;
         }
     }
 
